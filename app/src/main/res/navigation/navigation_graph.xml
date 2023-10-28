@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/loginFragment">
+
+
+    <fragment
+        android:id="@+id/titleFragment"
+        android:name="com.example.myprototype.TitleFragment"
+        android:label="fragment_title"
+        tools:layout="@layout/fragment_title">
+        <action
+            android:id="@+id/action_titleFragment_to_showImgFragment"
+            app:destination="@id/showImgFragment" />
+        <action
+            android:id="@+id/action_titleFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_titleFragment_to_rankingFragment"
+            app:destination="@id/rankingFragment" />
+        <action
+            android:id="@+id/action_titleFragment_to_threePlaceShowFragment"
+            app:destination="@id/threePlaceShowFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/showImgFragment"
+        android:name="com.example.myprototype.ShowImgFragment"
+        android:label="fragment_show_img"
+        tools:layout="@layout/fragment_show_img" >
+        <action
+            android:id="@+id/action_showImgFragment_to_takeImgFragment"
+            app:destination="@id/takeImgFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/takeImgFragment"
+        android:name="com.example.myprototype.TakeImgFragment"
+        android:label="fragment_take_img"
+        tools:layout="@layout/fragment_take_img" >
+        <action
+            android:id="@+id/action_takeImgFragment_to_showImgFragment"
+            app:destination="@id/showImgFragment" />
+        <action
+            android:id="@+id/action_takeImgFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.example.myprototype.ResultFragment"
+        android:label="fragment_result"
+        tools:layout="@layout/fragment_result" >
+        <action
+            android:id="@+id/action_resultFragment_to_titleFragment"
+            app:destination="@id/titleFragment" />
+        <action
+            android:id="@+id/action_resultFragment_to_rankingFragment"
+            app:destination="@id/rankingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.myprototype.LoginFragment"
+        android:label="fragment_login2"
+        tools:layout="@layout/fragment_login2" >
+        <action
+            android:id="@+id/action_loginFragment_to_titleFragment"
+            app:destination="@+id/titleFragment"/>
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@+id/registerFragment"/>
+        <action
+            android:id="@+id/action_loginFragment_self"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.myprototype.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@+id/loginFragment"/>
+        <action
+            android:id="@+id/action_registerFragment_to_titleFragment"
+            app:destination="@+id/titleFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/rankingFragment"
+        android:name="com.example.myprototype.RankingFragment"
+        android:label="fragment_ranking"
+        tools:layout="@layout/fragment_ranking" />
+    <fragment
+        android:id="@+id/threePlaceShowFragment"
+        android:name="com.example.myprototype.ThreePlaceShowFragment"
+        android:label="fragment_three_place_show"
+        tools:layout="@layout/fragment_three_place_show" />
+
+
+</navigation>

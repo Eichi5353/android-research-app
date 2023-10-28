@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">MyPrototype</string>
+    <string name="new_app_name">みんなでGO v1</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">"Email"</string>
+    <string name="prompt_password">"Password"</string>
+    <string name="action_sign_in">"Sign in or register"</string>
+    <string name="action_sign_in_short">"Sign in"</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>\
+    <string name="login">"Login"</string>
+    <string name="register">"Register"</string>
+    <string name="click_login">"Click to Login"</string>
+    <string name="click_register">"Click to Register"</string>
+    <string name="user_name">"User name"</string>
+
+    <!-- Strings related to title -->
+    <string name="game_title">"みんなでGO!"</string>
+    <string name="start_game">"ゲームスタート！"</string>
+    <string name="logout">"Logout"</string>
+    <string name="go_ranking">"ランキングを見る"</string>
+
+
+    <!-- Strings related to show img -->
+    <string name="take_caution1">"注意!"</string>
+    <string name="take_caution2">"必ず画面を横にして\n撮影してください"</string>
+    <string name="ok">"OK"</string>
+
+    <!-- Strings related to Result -->
+    <string name="take_again">"撮影を\nやり直す"</string>
+    <string name="image_again">"もう一度\n問題画像を見る"</string>
+    <string name="go_result">"結果へ"</string>
+
+
+    <!-- Strings related to Result -->
+    <string name="result">"得点は．．．"</string>
+    <string name="back_title">"もう一度遊ぶ"</string>
+    <string name="to_ranking">"ランキングへ"</string>
+    <string name="q_img">"問題画像"</string>
+    <string name="t_img">"あなたの\n撮影画像"</string>
+
+
+
+    <!-- Strings related to Result -->
+    <string name="ranking">"得点ランキング"</string>
+    <string name="ba">""</string>
+    <string name="position">"順位"</string>
+    <string name="username">"ユーザー名"</string>
+    <string name="point">"得点"</string>
+
+
+</resources>

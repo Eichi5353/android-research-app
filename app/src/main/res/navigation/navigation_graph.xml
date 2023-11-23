@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/loginFragment"
+    >
+<!--    app:startDestination="@+id/mapsTestFragment"-->
+<!--    app:startDestination="@id/loginFragment"-->
 
 
     <fragment
@@ -97,6 +100,11 @@
         android:name="com.example.myprototype.ThreePlaceShowFragment"
         android:label="fragment_three_place_show"
         tools:layout="@layout/fragment_three_place_show" />
+    <fragment
+        android:id="@+id/mapsTestFragment"
+        android:name="com.example.myprototype.MapsTestFragment"
+        android:label="fragment_maps_test"
+        tools:layout="@layout/fragment_maps_test" />
 
 
 </navigation>

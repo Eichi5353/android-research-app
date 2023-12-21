@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_titleFragment_to_threePlaceShowFragment"
             app:destination="@id/threePlaceShowFragment" />
+        <action
+            android:id="@+id/action_titleFragment_to_mapsTestFragment"
+            app:destination="@id/mapsTestFragment" />
     </fragment>
 
     <fragment

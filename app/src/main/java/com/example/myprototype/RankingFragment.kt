@@ -25,7 +25,9 @@ import org.json.JSONException
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
-
+//Cloud Runに接続
+//Cloud RunでFirestoreの情報を取り出して，ソートしている　それを表示している
+//Cloud Runのコードがまだ古いもの
 
 class RankingFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -43,8 +45,10 @@ class RankingFragment : Fragment() {
     private val POST = "POST"
     private val GET = "GET"
     //private val url = "https://myapp-run2-hxk7ud77sq-dt.a.run.app"
-    private val url = "https://myapp-run3-hxk7ud77sq-dt.a.run.app"
+//    private val url = "https://myapp-run3-hxk7ud77sq-dt.a.run.app"
 
+    //ais account - Research H
+    private val url = "https://first-test-vb65kt74iq-dt.a.run.app"
 
     //Cloud Runデバッグ用
     //private val url = "https://8080-cs-262355487553-default.cs-asia-east1-jnrc.cloudshell.dev"

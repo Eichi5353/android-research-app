@@ -69,5 +69,18 @@
         app:layout_constraintTop_toBottomOf="@+id/cuurent_usename"
         android:layout_marginBottom="100dp"/>
 
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="テスト用"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_go_ranking"
+        android:layout_marginBottom="100dp"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

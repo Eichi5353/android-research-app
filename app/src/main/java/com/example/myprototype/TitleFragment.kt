@@ -24,6 +24,10 @@ import com.google.firebase.storage.ktx.component2
 import com.google.firebase.storage.ktx.storage
 
 // TODO: Rename parameter arguments, choose names that match
+//タイトル画面の表示
+//提示画像の選択
+//現在のユーザー情報の取得
+
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -81,6 +85,10 @@ class TitleFragment : Fragment() {
         }
         view.findViewById<Button>(R.id.btn_go_ranking).setOnClickListener{
             findNavController().navigate(R.id.action_titleFragment_to_rankingFragment)
+        }
+
+        view.findViewById<Button>(R.id.btn_test).setOnClickListener{
+            findNavController().navigate(R.id.action_titleFragment_to_mapsTestFragment)
         }
         Log.d(TAG, "Hi")
         if(user != null){
@@ -192,7 +200,7 @@ class TitleFragment : Fragment() {
         //size = 0
         random_num = 0
         result = null
-        val listRef = storage.reference.child("AISLab")
+        val listRef = storage.reference.child("BKC")
         //val listRef = storage.reference.child("images")
 
         //storageReference = storage.reference

@@ -85,7 +85,11 @@ class ResultFragment : Fragment() {
     //private val url = "https://myapp-run2-hxk7ud77sq-dt.a.run.app"
     //private val url = "https://myapp-run3-hxk7ud77sq-dt.a.run.app"
     //akaze???
-    private val url = "https://myapp-run4-akaze-hxk7ud77sq-dt.a.run.app"
+//    private val url = "https://myapp-run4-akaze-hxk7ud77sq-dt.a.run.app"
+
+    //ais account - Research H
+    private val url = "https://first-test-vb65kt74iq-dt.a.run.app"
+
     //local
     //private val url = "https://8080-cs-262355487553-default.cs-asia-east1-jnrc.cloudshell.dev"
 

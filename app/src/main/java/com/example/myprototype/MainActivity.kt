@@ -13,6 +13,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.remote.Datastore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.component1
@@ -47,15 +48,10 @@ class MainActivity : AppCompatActivity() {
         //非同期処理 何のため？
         val task = AsyncTaskClass()
         task.execute("")
-
         //auth = Firebase.auth
-
-
-
-
-
         //bitmapViewModel= ViewModelProvider(this).get(BitmapViewModel::class.java)
     }
+}
 
-
+object DatastoreSingleton {
 }

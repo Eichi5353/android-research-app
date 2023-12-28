@@ -40,7 +40,8 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 //    private lateinit var mapView: MapView
     private val markerList = mutableListOf<MapMakerInfo>()
 
-    val APIKey = "AIzaSyCprjoQjsq3IeA3cRmkjTsNl3ahzPbfpSA"
+//    val APIKey = "AIzaSyCprjoQjsq3IeA3cRmkjTsNl3ahzPbfpSA"
+    val APIKey = "AIzaSyCNx31A-f_VyABih0-OETfZ6BicvbJJgFY"
     //    val response = null
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // 任意の値
     val TAG = "MapsFragment"
@@ -160,6 +161,8 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                         // ここで取得した情報を使用する処理を行う
                         val route = routes.getJSONObject(0) // 最初の経路を取得
                         points = route.getJSONObject("overview_polyline").getString("points")
+//                        Log.d(TAG, "points : ${points}")
+
                     } else {
                         // エラー処理: "legs"が空の場合
                     }

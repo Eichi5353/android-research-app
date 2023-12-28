@@ -88,7 +88,8 @@ class ResultFragment : Fragment() {
 //    private val url = "https://myapp-run4-akaze-hxk7ud77sq-dt.a.run.app"
 
     //ais account - Research H
-    private val url = "https://first-test-vb65kt74iq-dt.a.run.app"
+//    private val url = "https://first-test-vb65kt74iq-dt.a.run.app"
+    private val url = "https://siamese-test-vb65kt74iq-an.a.run.app"
 
     //local
     //private val url = "https://8080-cs-262355487553-default.cs-asia-east1-jnrc.cloudshell.dev"
@@ -208,7 +209,9 @@ class ResultFragment : Fragment() {
                 Log.d(TAG, "sendPost")
                 //Log.d(TAG,stImg1!!)//ちゃんとした値が存在
                 //ここが問題　値がサーバー側へしっかり与えられていない
-                sendRequest(POST, "/calculate-similarity", "img1", stringImg1, "img2", stringImg2)
+//                sendRequest(POST, "/calculate-similarity", "img1", stringImg1, "img2", stringImg2)
+                sendRequest(POST, "/calculate-siamese", "img1", stringImg1, "img2", stringImg2)
+
                 //sendRequest_test(GET, "/")
 
                 //sendRequest(POST, "img/post", )
@@ -238,6 +241,7 @@ class ResultFragment : Fragment() {
             /* if url is of our get request, it should not have parameters according to our implementation.
             * But our post request should have 'name' parameter. */
             val fullURL = url + "/" + method //+ if (param == null) "" else "/$param"
+            Log.d(TAG, "request full URL : ${fullURL}")
             val request: Request
             val client: OkHttpClient = OkHttpClient().newBuilder()
                     //add this block
@@ -281,7 +285,7 @@ class ResultFragment : Fragment() {
 
                         // Read data on the worker thread
                         responseData = response.body!!.string()
-                        Log.d(TAG, responseData)
+                        Log.d(TAG, "http responseData: ${responseData}")
 
 
                         getActivity()?.runOnUiThread {
@@ -290,32 +294,34 @@ class ResultFragment : Fragment() {
                             progressBar?.visibility = ProgressBar.INVISIBLE
                         }
                         //正規表現で名前抽出
-                        val pattern = ".*\\/([a-zA-Z0-9_]+)\\.jpg\$".toRegex()
-                        val matchResult = pattern.find(mUri.toString())
-                        extractedString = matchResult?.groupValues?.get(1)
-                        Log.d(TAG, "Locate Name: ${extractedString}")
-                        Log.d(TAG, "place0: ${matchResult?.groupValues?.get(0)}")
-                        if (user != null) {
-                            val username: String = user!!.displayName.toString()
-                            //データベースに追加する得点データ
-                            Log.d(TAG, "Point is ${responseData} point")
-                            val point_data = hashMapOf(
-                                "point" to responseData.toDoubleOrNull()
-                            )
-                            val subRef = db.collection("users").document(username)
-                                .collection("Places")
-                            //.update(point_data as Map<String, String>)
-                            //.addOnSuccessListener {
-                            subRef.document(extractedString.toString())
-                                .set(point_data)
-                                .addOnSuccessListener {
-                                    Log.d(TAG, "サブコレクションに格納できた: ${username}:${responseData}")
-                                }
-                                .addOnFailureListener{ e ->
-                                    Log.w(TAG, "Error adding document", e)
-                                }
-                        } else
-                            Log.d(TAG, "Could not find user")
+
+//                        一旦コメントアウト　Siameseさーばー確かめのため
+//                        val pattern = ".*\\/([a-zA-Z0-9_]+)\\.jpg\$".toRegex()
+//                        val matchResult = pattern.find(mUri.toString())
+//                        extractedString = matchResult?.groupValues?.get(1)
+//                        Log.d(TAG, "Locate Name: ${extractedString}")
+//                        Log.d(TAG, "place0: ${matchResult?.groupValues?.get(0)}")
+//                        if (user != null) {
+//                            val username: String = user!!.displayName.toString()
+//                            //データベースに追加する得点データ
+//                            Log.d(TAG, "Point is ${responseData} point")
+//                            val point_data = hashMapOf(
+//                                "point" to responseData.toDoubleOrNull()
+//                            )
+//                            val subRef = db.collection("users").document(username)
+//                                .collection("Places")
+//                            //.update(point_data as Map<String, String>)
+//                            //.addOnSuccessListener {
+//                            subRef.document(extractedString.toString())
+//                                .set(point_data)
+//                                .addOnSuccessListener {
+//                                    Log.d(TAG, "サブコレクションに格納できた: ${username}:${responseData}")
+//                                }
+//                                .addOnFailureListener{ e ->
+//                                    Log.w(TAG, "Error adding document", e)
+//                                }
+//                        } else
+//                            Log.d(TAG, "Could not find user")
 
 
 /*

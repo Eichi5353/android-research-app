@@ -48,7 +48,10 @@ class RankingFragment : Fragment() {
 //    private val url = "https://myapp-run3-hxk7ud77sq-dt.a.run.app"
 
     //ais account - Research H
-    private val url = "https://first-test-vb65kt74iq-dt.a.run.app"
+//    private val url = "https://first-test-vb65kt74iq-dt.a.run.app"
+    //model-run
+    private val url = "https://model-run-vb65kt74iq-an.a.run.app"
+
 
     //Cloud Runデバッグ用
     //private val url = "https://8080-cs-262355487553-default.cs-asia-east1-jnrc.cloudshell.dev"

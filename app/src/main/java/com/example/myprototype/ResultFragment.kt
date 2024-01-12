@@ -89,9 +89,12 @@ class ResultFragment : Fragment() {
 
     //ais account - Research H
 //    private val url = "https://first-test-vb65kt74iq-dt.a.run.app"
-    private val url = "https://siamese-test-vb65kt74iq-an.a.run.app"
+//    private val url = "https://siamese-test-vb65kt74iq-an.a.run.app"
+    private val url = "https://model-run-vb65kt74iq-an.a.run.app"
 
     //local
+//    private val url = "https://8080-cs-785697529649-default.cs-asia-east1-vger.cloudshell.dev/"
+
     //private val url = "https://8080-cs-262355487553-default.cs-asia-east1-jnrc.cloudshell.dev"
 
     private val POST = "POST"
@@ -218,6 +221,9 @@ class ResultFragment : Fragment() {
                 // textView_response2?.setText("POST img!")
                 //sendRequest(POST, "getimg", "img2", stImg2)
             }
+//            while (progressBar?.visibility != ProgressBar.INVISIBLE){
+//                Thread.sleep(100)
+//            }
         }
         Log.d(TAG,"処理時間は${time1}ミリ秒です")
         Log.d(TAG,"処理時間合計は${time1+time2}ミリ秒です")

@@ -107,7 +107,28 @@
         android:id="@+id/mapsTestFragment"
         android:name="com.example.myprototype.MapsTestFragment"
         android:label="fragment_maps_test"
-        tools:layout="@layout/fragment_maps_test" />
+        tools:layout="@layout/fragment_maps_test" >
+        <action
+            android:id="@+id/action_mapsTestFragment_to_takeImgFragment2"
+            app:destination="@id/takeImgFragment2" />
+        <action
+            android:id="@+id/action_mapsTestFragment_to_resultAllFragment"
+            app:destination="@id/resultAllFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/takeImgFragment2"
+        android:name="com.example.myprototype.TakeImgFragment2"
+        android:label="fragment_take_img2"
+        tools:layout="@layout/fragment_take_img2" >
+        <action
+            android:id="@+id/action_takeImgFragment2_to_mapsTestFragment"
+            app:destination="@id/mapsTestFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultAllFragment"
+        android:name="com.example.myprototype.ResultAllFragment"
+        android:label="fragment_result_all"
+        tools:layout="@layout/fragment_result_all" />
 
 
 </navigation>

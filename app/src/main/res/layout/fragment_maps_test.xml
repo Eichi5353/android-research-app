@@ -1,8 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MapsTestFragment" />
+    android:layout_height="match_parent">
+<!--    上に書くほど下に配置されるレイアウト-->
+    <!-- 他のUI要素 (例: ボタン) -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"></LinearLayout>
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MapsTestFragment" />
+
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="horizontal"
+        android:layout_marginTop="650dp"
+        android:background="@color/white">
+        <LinearLayout
+            android:id="@+id/topBar1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginVertical="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!--        buttonを問題画像に-->
+            <!--        それをタッチしたら拡大して，撮影画面に行くボタン-->
+            <ImageButton
+                android:id="@+id/btn1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/aed02"
+                android:layout_margin="0dp"
+                android:onClick="btn1_click"
+                android:scaleType="fitCenter"/>
+            <ImageButton
+                android:id="@+id/btn2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/atm03"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/crecore01"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn4"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/mama01"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn5"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/nitro01"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn6"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/obj21"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn7"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/stone01"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn8"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/water02"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/btn_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="終了する"
+        android:textSize="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="85dp" />
+    <!-- トップバーなど他のUI要素も追加可能 -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:background="@color/white">
+
+        <!-- トップバーの中の要素をここに追加 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="20dp"
+            android:text="経路に従って移動しながら\n下記の場所を見つけて撮影して"
+
+            />
+    </LinearLayout>
+
+</RelativeLayout>

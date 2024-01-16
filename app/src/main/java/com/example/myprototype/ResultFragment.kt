@@ -119,7 +119,6 @@ class ResultFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        visitViewModel = ViewModelProvider(this).get(VisitCountViewModel::class.java)
 
     }
 
@@ -145,22 +144,6 @@ class ResultFragment : Fragment() {
         //問題画像と撮影画像のURIを取得したい　Jpegを取得できるならそちらの方が良い？
         //FirebaseのストレージからURI取得できる？
         //-> URLから画像をダウンロードして，URIを入手して．．．
-
-        //撮影のフラグメントでURIをViewModelに保存してここで使えばいいかなあ？
-        var count = visitViewModel.visitCountLiveData.value
-        Log.i(TAG, "visitViewModel =visitCount:${count}")
-        visitViewModel.incrementVisitCount()
-        //count = visitViewModel.getVisitCount().value
-        count = visitViewModel.visitCountLiveData.value
-        Log.i(TAG, "visitViewModel =visitCount:${count}")
-        //値が変化した場合にViewModelの値にセットするように処理している
-        val visitCountObserver = Observer<Int> { newVisitCount ->
-            // Update the UI, in this case, a TextView.
-            count = newVisitCount
-        }
-        visitViewModel.visitCountLiveData.observe(viewLifecycleOwner, visitCountObserver)
-        visitViewModel.visitCountLiveData.value = count
-        Log.i(TAG, "visitViewModel =visitCount:${visitViewModel.getVisitCount().value}")
 
         return view
     }
@@ -293,188 +276,12 @@ class ResultFragment : Fragment() {
                         responseData = response.body!!.string()
                         Log.d(TAG, "http responseData: ${responseData}")
 
-
+//                      非同期処理終了後にUI更新するときに必要
                         getActivity()?.runOnUiThread {
                             //全部の得点を表示させたい！！
                             scoreText!!.text = responseData + "点！！"
                             progressBar?.visibility = ProgressBar.INVISIBLE
                         }
-                        //正規表現で名前抽出
-
-//                        一旦コメントアウト　Siameseさーばー確かめのため
-//                        val pattern = ".*\\/([a-zA-Z0-9_]+)\\.jpg\$".toRegex()
-//                        val matchResult = pattern.find(mUri.toString())
-//                        extractedString = matchResult?.groupValues?.get(1)
-//                        Log.d(TAG, "Locate Name: ${extractedString}")
-//                        Log.d(TAG, "place0: ${matchResult?.groupValues?.get(0)}")
-//                        if (user != null) {
-//                            val username: String = user!!.displayName.toString()
-//                            //データベースに追加する得点データ
-//                            Log.d(TAG, "Point is ${responseData} point")
-//                            val point_data = hashMapOf(
-//                                "point" to responseData.toDoubleOrNull()
-//                            )
-//                            val subRef = db.collection("users").document(username)
-//                                .collection("Places")
-//                            //.update(point_data as Map<String, String>)
-//                            //.addOnSuccessListener {
-//                            subRef.document(extractedString.toString())
-//                                .set(point_data)
-//                                .addOnSuccessListener {
-//                                    Log.d(TAG, "サブコレクションに格納できた: ${username}:${responseData}")
-//                                }
-//                                .addOnFailureListener{ e ->
-//                                    Log.w(TAG, "Error adding document", e)
-//                                }
-//                        } else
-//                            Log.d(TAG, "Could not find user")
-
-
-/*
-                        //3問やらせる場合
-                        // Run view-related code back on the main thread.
-                        // Here we display the response message in our text view
-                        if (visitViewModel.getVisitCount().value!! == 1){
-                            //ViewModelにresult１　result1に結果を格納
-                            bitmapViewModel.result1.postValue(responseData.toString())
-                            getActivity()?.runOnUiThread {
-                                scoreText!!.text = "もう2問やれ"
-                                progressBar?.visibility = ProgressBar.GONE
-                            }
-                            //add point to database
-                            //get image_name from url
-                            Log.d(TAG, "FireStorage gsName2: ${mUri}")
-                            //正規表現で名前抽出
-                            val pattern = ".*\\/([a-zA-Z0-9_]+)\\.jpg\$".toRegex()
-                            val matchResult = pattern.find(mUri.toString())
-                            extractedString = matchResult?.groupValues?.get(1)
-                            Log.d(TAG, "Locate Name: ${extractedString}")
-                            Log.d(TAG, "place0: ${matchResult?.groupValues?.get(0)}")
-                            bitmapViewModel.rmBitmap.postValue(bitmap1)
-                            bitmapViewModel.rtBitmap.postValue(bitmap2)
-
-
-                            if (user != null) {
-                                val username: String = user!!.displayName.toString()
-                                //データベースに追加する得点データ
-                                Log.d(TAG, "Point is ${responseData} point")
-                                val point_data = hashMapOf(
-                                    "point" to responseData.toString()
-                                )
-                                val subRef = db.collection("users").document(username)
-                                    .collection("Places")
-                                //.update(point_data as Map<String, String>)
-                                //.addOnSuccessListener {
-                                subRef.document(extractedString.toString())
-                                    .set(point_data)
-                                    .addOnSuccessListener {
-                                        Log.d(TAG, "サブコレクションに格納できた: ${username}:${responseData}")
-                                    }
-                                    .addOnFailureListener{ e ->
-                                        Log.w(TAG, "Error adding document", e)
-                                    }
-                            } else
-                                Log.d(TAG, "Could not find user")
-
-                        }else if(visitViewModel.getVisitCount().value!! == 2){
-                            //result2に格納
-                            bitmapViewModel.result2.postValue(responseData.toString())
-                            getActivity()?.runOnUiThread {
-                                scoreText!!.text = "もう1問やれ"
-                                progressBar?.visibility = ProgressBar.GONE
-                            }
-                            //add point to database
-                            //get image_name from url
-                            Log.d(TAG, "FireStorage gsName2: ${mUri}")
-                            //正規表現で名前抽出
-                            val pattern = ".*\\/([a-zA-Z0-9_]+)\\.jpg\$".toRegex()
-                            val matchResult = pattern.find(mUri.toString())
-                            extractedString = matchResult?.groupValues?.get(1)
-                            Log.d(TAG, "Locate Name: ${extractedString}")
-                            Log.d(TAG, "place0: ${matchResult?.groupValues?.get(0)}")
-                            bitmapViewModel.rmBitmap2.postValue(bitmap1)
-                            bitmapViewModel.rtBitmap2.postValue(bitmap2)
-
-
-                            if (user != null) {
-                                val username: String = user!!.displayName.toString()
-                                //データベースに追加する得点データ
-                                Log.d(TAG, "Point is ${responseData} point")
-                                val point_data = hashMapOf(
-                                    "point" to responseData.toString()
-                                )
-                                val subRef = db.collection("users").document(username)
-                                    .collection("Places")
-                                //.update(point_data as Map<String, String>)
-                                //.addOnSuccessListener {
-                                subRef.document(extractedString.toString())
-                                    .set(point_data)
-                                    .addOnSuccessListener {
-                                        Log.d(TAG, "サブコレクションに格納できた: ${username}:${responseData}")
-                                    }
-                                    .addOnFailureListener{ e ->
-                                        Log.w(TAG, "Error adding document", e)
-                                    }
-                            } else
-                                Log.d(TAG, "Could not find user")
-                        }else if(visitViewModel.getVisitCount().value!! == 3){
-                            getActivity()?.runOnUiThread {
-                                bitmapViewModel.result3.postValue(responseData.toString())
-                                //全部の得点を表示させたい！！
-                                scoreText!!.text = "OK!  画面遷移します　そのままで"
-                                progressBar?.visibility = ProgressBar.GONE
-
-                                val fragmentTransaction = fragmentManager?.beginTransaction()
-                                val targetFragment = ResultAllFragment()
-
-                                fragmentTransaction?.replace(R.id.container, targetFragment)
-                                //fragmentTransaction?.addToBackStack(null) // バックスタックに追加する場合
-                                fragmentTransaction?.commit()
-
-                            }
-                            //add point to database
-                            //get image_name from url
-                            Log.d(TAG, "FireStorage gsName2: ${mUri}")
-                            //正規表現で名前抽出
-                            val pattern = ".*\\/([a-zA-Z0-9_]+)\\.jpg\$".toRegex()
-                            val matchResult = pattern.find(mUri.toString())
-                            extractedString = matchResult?.groupValues?.get(1)
-                            Log.d(TAG, "Locate Name: ${extractedString}")
-                            Log.d(TAG, "place0: ${matchResult?.groupValues?.get(0)}")
-                            bitmapViewModel.rmBitmap3.postValue(bitmap1)
-                            bitmapViewModel.rtBitmap3.postValue(bitmap2)
-
-
-                            if (user != null) {
-                                val username: String = user!!.displayName.toString()
-                                //データベースに追加する得点データ
-                                Log.d(TAG, "Point is ${responseData} point")
-                                val point_data = hashMapOf(
-                                    "point" to responseData.toString()
-                                )
-                                val subRef = db.collection("users").document(username)
-                                    .collection("Places")
-                                //.update(point_data as Map<String, String>)
-                                //.addOnSuccessListener {
-                                subRef.document(extractedString.toString())
-                                    .set(point_data)
-                                    .addOnSuccessListener {
-                                        Log.d(TAG, "サブコレクションに格納できた: ${username}:${responseData}")
-                                    }
-                                    .addOnFailureListener{ e ->
-                                        Log.w(TAG, "Error adding document", e)
-                                    }
-                            } else
-                                Log.d(TAG, "Could not find user")
-                        }else{
-                            //error処理いりますか？
-                        }
-
- */
-
-
-
-
                     }
                 })
         }

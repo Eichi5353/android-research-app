@@ -161,6 +161,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
     //地図への描画とかUIの変更の際に必要？
     implementation("com.google.maps.android:maps-utils-ktx:3.4.0")
+//    経路に矢印，通った経路を消す
+    implementation 'com.google.maps.android:android-maps-utils:2.3.0'
     //Google Cloud firestore (Datastore mode)
 //    implementation 'com.google.cloud:google-cloud-datastore:2.17.6'  // 最新のバージョンに置き換えてください
 

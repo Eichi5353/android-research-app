@@ -15,6 +15,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +42,10 @@ class ResultAllFragment : Fragment() {
     var progressBar: ProgressBar? = null
     private lateinit var recyclerView: RecyclerView
 
+    private lateinit var auth: FirebaseAuth
+    val db = Firebase.firestore
+    var user: FirebaseUser? = null
+
     private lateinit var mapsCountViewModel: MapsCountViewModel
 
     override fun onCreateView(
@@ -45,6 +54,8 @@ class ResultAllFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_result_all, container, false)
+        auth = Firebase.auth
+        user = auth.currentUser
         recyclerView = view.findViewById(R.id.recycler) // Viewをインフレートした後にrecyclerViewを初期化
         activity?.run {
             mapsCountViewModel = ViewModelProvider(this).get(MapsCountViewModel::class.java)
@@ -65,6 +76,29 @@ class ResultAllFragment : Fragment() {
                 mapsCountViewModel.takingList[i],mapsCountViewModel.resultList[i])
             resultList.add(resultInfo)
             Log.d(TAG,"resultList : ${resultList}")
+
+//            得点をそのユーザに加算していく処理
+            if (user != null) {
+                val username: String = user!!.displayName.toString()
+                //データベースに追加する得点データ
+                Log.d(TAG, "Point is ${resultInfo.score} Point")
+                val point_data = hashMapOf(
+                    "Point" to resultInfo.score.toString()
+                )
+                val subRef = db.collection("users").document(username)
+                    .collection("Places")
+                //.update(point_data as Map<String, String>)
+                //.addOnSuccessListener {
+                subRef.document(i.toString()+"_place")
+                    .set(point_data)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "サブコレクションに格納できた: ${username}:${resultInfo.score}")
+                    }
+                    .addOnFailureListener{ e ->
+                        Log.w(TAG, "Error adding document", e)
+                    }
+            } else
+                Log.d(TAG, "Could not find user")
         }
         Log.d(TAG,"resultList(after loop) : ${resultList}")
         val adapter = ResultRecyclerViewAdapter(resultList)
@@ -127,7 +161,7 @@ class ResultRecyclerViewAdapter(val list: List<ResultInfo>) : RecyclerView.Adapt
         Glide.with(holder.itemView.context)
             .load(resultInfo.taking)
             .into(holder.takingImageView)
-        holder.scoretText.text = resultInfo.score
+        holder.scoretText.text = resultInfo.score + "点"
         Log.d(TAG, "score: ${resultInfo.score}")
     }
 

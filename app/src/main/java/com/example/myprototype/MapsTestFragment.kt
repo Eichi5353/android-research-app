@@ -9,6 +9,7 @@ import android.location.Location
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +24,16 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.myprototype.data.MapMakerInfo
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
@@ -58,21 +63,9 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 
     private var lastButtonClicked: ImageButton? = null
 
-    private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-//        val sydney = LatLng(-34.0, 151.0)
-//        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -158,11 +151,11 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
         // マップの初期設定などを行う
 //        初期位置
         val initialLatLng:LatLng =LatLng(34.97948,135.96404)
-        val zoomLevel = 14.0f
+        val zoomLevel = 21.0f
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, zoomLevel));
         // 保存されたマーカーの位置情報を復元
-        restoreMarkers()
-
+//        restoreMarkers()
+        startLocationUpdates()
         // マップがクリックされたときのリスナーを設定
 //        mMap.setOnMapClickListener { latLng ->
             // 新しい MapMarkerInfo インスタンスを作成
@@ -193,13 +186,17 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
         GlobalScope.launch(Dispatchers.IO) {
             // バックグラウンドで実行したい処理
             //ここでもうおかしい
-            Log.d(TAG, "current location(beforeURL): ${currentLatLng}")
+//            Log.d(TAG, "current location(beforeURL): ${currentLatLng}")
             val response = URL("https://maps.googleapis.com/maps/api/directions/json?" +
                     "origin=34.97948,135.96404" +
 //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
                     "&destination=34.97948,135.96404" +
                     "&mode=walking" +
-                    "&waypoints=34.97983,135.96478|34.98073,135.96170|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98134,135.96472|34.98259,135.96450|34.98182,135.96345|34.98081,135.96292|34.98088,135.96204" +
+                                                                                            //なくてよい？                                            Nitro                ８０前            アーク前
+                    "&waypoints=34.97983,135.96478|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98046,135.96381|34.98090,135.96371|34.98134,135.96472|34.98255,135.96457|34.98181,135.96349|" +
+                    //AED
+                    "34.98085,135.96305|34.98122,135.96253|34.98053,135.96241" +
+//                    "34.98259,135.96450|34.98182,135.96345|34.98081,135.96292|34.98088,135.96204" +
                     "&key=${APIKey}")
                 .readText()
 //            Log.d(TAG,"response Json: ${response}")
@@ -231,10 +228,11 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 //                val points = route.getJSONObject("overview_polyline").getString("points")
 
                 // メインスレッドで実行すること
+//                経路の色設定
                 val polyline = PolylineOptions()
                     .addAll(PolyUtil.decode(points))
-                    .color(Color.BLUE)
-                    .width(5f)
+                    .color(Color.RED)
+                    .width(10f)
 
                 mMap.addPolyline(polyline)
             }
@@ -382,9 +380,60 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
             findNavController().navigate(R.id.action_mapsTestFragment_to_takeImgFragment2,queryBundle)
 
 
-
-
         }
 
     }
+
+//    位置情報を更新するためのメソッド
+    private fun startLocationUpdates() {
+    // パーミッションがすでに許可されているか確認
+    if (ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        // パーミッションが許可されていない場合、ユーザーにリクエスト
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
+    } else {
+        // パーミッションがすでに許可されている場合、GPSを使用する処理を続行
+        // ここにGPSを使用するための処理を追加
+        val fusedLocationClient: FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
+
+        fusedLocationClient.requestLocationUpdates(
+            getLocationRequest(),
+            object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    super.onLocationResult(locationResult)
+                    // 位置情報が更新されたときの処理
+                    val location = locationResult.lastLocation
+                    if (location != null) {
+                        currentLatLng = LatLng(location.latitude, location.longitude)
+                    }
+                    mMap.clear()
+                    mMap.addMarker(MarkerOptions().position(currentLatLng!!).title("Current Location"))
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng!!))
+                    makeApiRequest()  // 位置情報が更新されるたびに経路を再取得
+                }
+            },
+            Looper.getMainLooper()
+        )
+            .addOnFailureListener { exception ->
+                // 現在地の取得に失敗した場合の処理
+                Log.e("Location", "Error getting location", exception)
+            }
+        }
+    }
+
+
+    private fun getLocationRequest(): LocationRequest {
+        return LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(1000)  // 1000ミリ秒ごとに更新
+    }
+
 }

@@ -166,25 +166,25 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
         // マップがクリックされたときのリスナーを設定
 //        mMap.setOnMapClickListener { latLng ->
             // 新しい MapMarkerInfo インスタンスを作成
-            val markerInfo = MapMakerInfo(
-                id = UUID.randomUUID().toString(), // 一意なIDを生成
-                title = "Test marker",
-                snippet = "Marker Snippet",
-//                position = latLng
-                position = LatLng(34.97948,135.96404)
-            )
-            // マーカーを地図に追加
-            val marker = mMap.addMarker(
-                MarkerOptions()
-                    .position(markerInfo.position)
-                    .title(markerInfo.title)
-                    .snippet(markerInfo.snippet)
-            )
-            // マーカーを地図に追加
-            addMarkerToMap(markerInfo)
-
-            // マーカーの情報を保存
-            saveMarkers()
+//            val markerInfo = MapMakerInfo(
+//                id = UUID.randomUUID().toString(), // 一意なIDを生成
+//                title = "Test marker",
+//                snippet = "Marker Snippet",
+////                position = latLng
+//                position = LatLng(34.97948,135.96404)
+//            )
+//            // マーカーを地図に追加
+//            val marker = mMap.addMarker(
+//                MarkerOptions()
+//                    .position(markerInfo.position)
+//                    .title(markerInfo.title)
+//                    .snippet(markerInfo.snippet)
+//            )
+//            // マーカーを地図に追加
+//            addMarkerToMap(markerInfo)
+//
+//            // マーカーの情報を保存
+//            saveMarkers()
 //        }
 
     }
@@ -199,7 +199,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
                     "&destination=34.97948,135.96404" +
                     "&mode=walking" +
-                    "&waypoints=34.97983,135.96478|34.98073,135.96170|34.98035,135.96494|34.98134,135.96472|34.98259,135.96450|34.98182,135.96345|34.98081,135.96292|34.98088,135.96204" +
+                    "&waypoints=34.97983,135.96478|34.98073,135.96170|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98134,135.96472|34.98259,135.96450|34.98182,135.96345|34.98081,135.96292|34.98088,135.96204" +
                     "&key=${APIKey}")
                 .readText()
 //            Log.d(TAG,"response Json: ${response}")

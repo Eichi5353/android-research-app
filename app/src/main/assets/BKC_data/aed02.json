@@ -1,0 +1,11 @@
+{
+  "imageName": "aed02.jpg",
+  "location": {
+    "latitude": 34.98084,
+    "longitude": 135.96299
+  },
+  "description": "This is an example image.",
+  "tags": ["tag1", "tag2", "tag3"],
+  "isFavorite": true,
+  "metadata": null
+}

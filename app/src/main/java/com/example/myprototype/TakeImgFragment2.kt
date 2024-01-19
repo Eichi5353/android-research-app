@@ -1,14 +1,18 @@
 package com.example.myprototype
 
+import android.Manifest
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -20,9 +24,19 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +57,13 @@ import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import com.google.android.gms.maps.model.LatLng
+import org.json.JSONObject
+import kotlin.math.asin
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 import kotlin.system.measureTimeMillis
 
 // TODO: Rename parameter arguments, choose names that match
@@ -77,6 +98,10 @@ class TakeImgFragment2 : Fragment() {
     var q_bitmap: Bitmap? = null
 
     var query_bitmap:Bitmap? = null
+//    撮影画像GPS
+    var take_gps: LatLng? = null
+    var query_gps:LatLng? =null
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // 任意の値
 
 
     //データ送信用
@@ -125,6 +150,12 @@ class TakeImgFragment2 : Fragment() {
         if (requestCode == 200 && resultCode == AppCompatActivity.RESULT_OK) {
             //val bitmap = data?.getParcelableExtra<Bitmap>("data")//画像のビットマップデータの取得　getParcelableExtraは数値，文字列以外のデータ型のオブジェクトを取得
 
+//            撮影した場所のGPSを取得
+            startLocationUpdates()
+            Log.d(TAG,"take_gps : $take_gps")
+
+
+
 
             ivCamera = view?.findViewById<ImageView>(R.id.iv)
             //ivCamera?.setImageURI(_imageUri)
@@ -142,6 +173,19 @@ class TakeImgFragment2 : Fragment() {
             ivCamera?.setImageBitmap(bitmap)
 
             val query_file:String? = arguments?.getString("query_name")
+//問題画像の位置情報をjsonファイルから取得
+            val assetManager = context!!.assets
+            val jsonInputStream = assetManager.open("BKC_data/$query_file.json")
+            val jsonString = jsonInputStream.bufferedReader().use { it.readText() }
+
+// JSON データを解析して利用
+            val jsonObject = JSONObject(jsonString)
+            val locationObject = jsonObject.getJSONObject("location")
+            Log.d(TAG, "location from json: ${locationObject}")
+            query_gps = LatLng(locationObject.getDouble("latitude"),locationObject.getDouble("longitude"))
+            Log.d(TAG, "query_gps: ${query_gps}")
+
+
 //        計算する形に変換する　bitmapー＞Base64
             query_bitmap = getBitmapFromAsset(requireContext(), query_file!!)
             Log.d(TAG,"query bitmap : ${query_bitmap}")
@@ -202,7 +246,7 @@ class TakeImgFragment2 : Fragment() {
     }
     fun getBitmapFromAsset(context: Context, fileName: String): Bitmap? {
         val assetManager: AssetManager = context.assets
-        val inputStream: InputStream = assetManager.open("BKC/$fileName")
+        val inputStream: InputStream = assetManager.open("BKC/$fileName.jpg")
         Log.d(TAG,"from assets bitmap? is ${inputStream}")
         q_bitmap = BitmapFactory.decodeStream(inputStream)
 //        Log.d(TAG,"from assets bitmap? is ${q_bitmap}")
@@ -268,6 +312,19 @@ class TakeImgFragment2 : Fragment() {
                     responseData = response.body!!.string()
                     Log.d(TAG, "http responseData: ${responseData}")
 
+                    val distance = calculateDistance(take_gps!!.latitude,take_gps!!.longitude,query_gps!!.latitude,
+                        query_gps!!.longitude)
+                    Log.d(TAG,"query and taking gps distance: $distance km")
+                    if(distance<=0.06){
+                        val onGPS:Boolean = true
+                        Log.d(TAG,"GPS is OK  on the field")
+                        responseData = (responseData.toInt()/2+50).toString()
+                        Log.d(TAG,"GPS true responseData: $responseData")
+                    }else{
+                        responseData = 0.toString()
+                        Log.d(TAG,"responseData to 0 because gps is not correct")
+                    }
+
                     if (mapsCountViewModel.visitCount.value == 0) {
                         Log.e(TAG, "count is 0")
                     } else{
@@ -303,28 +360,108 @@ class TakeImgFragment2 : Fragment() {
                 }
             })
         }
+    fun calculateDistance(a: Double, b: Double, c: Double, d: Double): Double {
+        val earthRadius = 6371.0 // 地球の半径（キロメートル）
 
-    val maxCount=20
-    var count =0
+        val distance = 2 * earthRadius * asin(
+            sqrt(
+                sin((Math.toRadians(c - a)) / 2).pow(2) +
+                        cos(Math.toRadians(a)) * cos(Math.toRadians(c)) * sin((Math.toRadians(d - b)) / 2).pow(2)
+            )
+        )
 
-    public fun useJob(): Job? {
+        return distance
+    }
+    private fun checkLocationPermission() {
+        // パーミッションがすでに許可されているか確認
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // パーミッションが許可されていない場合、ユーザーにリクエスト
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            // パーミッションがすでに許可されている場合、GPSを使用する処理を続行
+            // ここにGPSを使用するための処理を追加
+            val fusedLocationClient:FusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(requireContext())
 
-        if(job!=null) {
-            return job
-        }else if(count<=maxCount){
-            count++
-            CoroutineScope(Dispatchers.Default).launch {
-                delay(2000)
-                // このブロック内で非同期処理を行うことも可能
-            }
-            Log.d(TAG, count.toString())
-            return useJob()
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    // 現在地を取得できた場合の処理
+                    location?.let {
+                        take_gps =
+                            com.google.android.gms.maps.model.LatLng(it.latitude, it.longitude)
+                        Log.d(TAG,"current location: ${take_gps}")
+//                        makeApiRequest()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    // 現在地の取得に失敗した場合の処理
+                    Log.e("Location", "Error getting location", exception)
+                }
+
         }
-        return null
     }
-    suspend fun waitForJob() {
-        job = deferredJob.await()
+
+    private fun startLocationUpdates() {
+        // パーミッションがすでに許可されているか確認
+        Log.d(TAG,"startLocationUpdates")
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // パーミッションが許可されていない場合、ユーザーにリクエスト
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            // パーミッションがすでに許可されている場合、GPSを使用する処理を続行
+            // ここにGPSを使用するための処理を追加
+            Log.d(TAG,"location permission granted!")
+            val fusedLocationClient: FusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(requireContext())
+
+            fusedLocationClient.requestLocationUpdates(
+                getLocationRequest(),
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+                        // 位置情報が更新されたときの処理
+                        val location = locationResult.lastLocation
+                        if (location != null) {
+                            take_gps = com.google.android.gms.maps.model.LatLng(
+                                location.latitude,
+                                location.longitude
+                            )
+                            Log.d(TAG,"location take_gps: $take_gps")
+
+                        }
+                    }
+                },
+                Looper.getMainLooper()
+            )
+                .addOnFailureListener { exception ->
+                    // 現在地の取得に失敗した場合の処理
+                    Log.e("Location", "Error getting location", exception)
+                }
+        }
     }
+    private fun getLocationRequest(): LocationRequest {
+        return LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+//            .setInterval(1000)  // 1000ミリ秒ごとに更新
+    }
+
+
 
 
 }

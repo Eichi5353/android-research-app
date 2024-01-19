@@ -94,35 +94,35 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<ImageButton>(R.id.btn1).setOnClickListener {
             val btn = view.findViewById<ImageButton>(R.id.btn1)
-            showImageDialog("aed02.jpg",btn)
+            showImageDialog("aed02",btn)
         }
         view.findViewById<ImageButton>(R.id.btn2).setOnClickListener {
             val btn2 = view.findViewById<ImageButton>(R.id.btn2)
-            showImageDialog("atm03.jpg",btn2)
+            showImageDialog("atm03",btn2)
         }
         view.findViewById<ImageButton>(R.id.btn3).setOnClickListener {
             val btn3 = view.findViewById<ImageButton>(R.id.btn3)
-            showImageDialog("crecore01.jpg",btn3)
+            showImageDialog("crecore01",btn3)
         }
         view.findViewById<ImageButton>(R.id.btn4).setOnClickListener {
             val btn4 = view.findViewById<ImageButton>(R.id.btn4)
-            showImageDialog("mama01.jpg",btn4)
+            showImageDialog("mama01",btn4)
         }
         view.findViewById<ImageButton>(R.id.btn5).setOnClickListener {
             val btn5 = view.findViewById<ImageButton>(R.id.btn5)
-            showImageDialog("nitro01.jpg",btn5)
+            showImageDialog("nitro01",btn5)
         }
         view.findViewById<ImageButton>(R.id.btn6).setOnClickListener {
             val btn6 = view.findViewById<ImageButton>(R.id.btn6)
-            showImageDialog("obj21.jpg",btn6)
+            showImageDialog("obj21",btn6)
         }
         view.findViewById<ImageButton>(R.id.btn7).setOnClickListener {
             val btn7 = view.findViewById<ImageButton>(R.id.btn7)
-            showImageDialog("stone01.jpg",btn7)
+            showImageDialog("stone01",btn7)
         }
         view.findViewById<ImageButton>(R.id.btn8).setOnClickListener {
             val btn8 = view.findViewById<ImageButton>(R.id.btn2)
-            showImageDialog("water02.jpg",btn8)
+            showImageDialog("water02",btn8)
         }
 
 
@@ -379,7 +379,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
         val dialogImageView: ImageView = dialog.findViewById(R.id.dialogImageView)
         // Glideを使用してAssetsから画像を読み込んでImageViewに表示
         Glide.with(requireContext())
-            .load("file:///android_asset/BKC/$imageFileName")
+            .load("file:///android_asset/BKC/$imageFileName.jpg")
             .into(dialogImageView)
         dialog.show()
         dialog.findViewById<Button>(R.id.btn_openCamera).setOnClickListener {

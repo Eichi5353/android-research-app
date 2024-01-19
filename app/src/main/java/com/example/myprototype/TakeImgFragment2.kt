@@ -23,8 +23,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
@@ -78,6 +81,8 @@ class TakeImgFragment2 : Fragment() {
 
     //データ送信用
     val bundle = Bundle()
+    public var job: Job? = null
+    private val deferredJob = CompletableDeferred<Job?>()
 
     //位置情報用
     private var mLManager: LocationManager? = null
@@ -151,7 +156,7 @@ class TakeImgFragment2 : Fragment() {
                 view?.findViewById<Button>(R.id.result_btn)?.setOnClickListener(){
             //            coroutineで類似度計算処理　Httpリクエスト
                     // Coroutineを使用して非同期処理を開始
-                    CoroutineScope(Dispatchers.Main).launch {
+                    job = CoroutineScope(Dispatchers.Main).launch {
                         // バックグラウンドで実行する処理（HTTPリクエストなど）
                         sendRequest(POST, "/calculate-siamese", "img1", string_query, "img2", string_taking)
                     }
@@ -275,6 +280,8 @@ class TakeImgFragment2 : Fragment() {
                             mapsCountViewModel.takingList.add(bitmap!!)
                             Log.d(TAG, "add to takingList: ${bitmap}")
                             Log.d(TAG, "mapscount.taking: ${mapsCountViewModel.takingList}")
+                            mapsCountViewModel.isRequestComplete.value = mapsCountViewModel.isRequestComplete.value!! + 1
+                            Log.d(TAG, "mapscount.isRequest: ${mapsCountViewModel.isRequestComplete.value}")
 
                         }
 
@@ -296,6 +303,28 @@ class TakeImgFragment2 : Fragment() {
                 }
             })
         }
+
+    val maxCount=20
+    var count =0
+
+    public fun useJob(): Job? {
+
+        if(job!=null) {
+            return job
+        }else if(count<=maxCount){
+            count++
+            CoroutineScope(Dispatchers.Default).launch {
+                delay(2000)
+                // このブロック内で非同期処理を行うことも可能
+            }
+            Log.d(TAG, count.toString())
+            return useJob()
+        }
+        return null
+    }
+    suspend fun waitForJob() {
+        job = deferredJob.await()
+    }
 
 
 }

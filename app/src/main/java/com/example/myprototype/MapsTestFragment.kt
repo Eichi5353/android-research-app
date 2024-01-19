@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -41,6 +42,7 @@ import com.google.maps.android.PolyUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
@@ -53,7 +55,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 //    private lateinit var mapView: MapView
     private val markerList = mutableListOf<MapMakerInfo>()
-
+    val a = 0
 //    val APIKey = "AIzaSyCprjoQjsq3IeA3cRmkjTsNl3ahzPbfpSA"
     val APIKey = "AIzaSyCNx31A-f_VyABih0-OETfZ6BicvbJJgFY"
     //    val response = null
@@ -125,7 +127,27 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 
 
         view.findViewById<Button>(R.id.btn_finish).setOnClickListener {
-            findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
+            if (mapsCountViewModel.isRequestComplete.value==mapsCountViewModel.visitCount.value)
+                findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
+            else
+                Toast.makeText(context, "Calculate now, wait a moment and click again", Toast.LENGTH_LONG).show()
+
+
+//            runBlocking {
+//                // 非同期処理が完了するまで待つ
+//                val instanceTake = TakeImgFragment2()
+//                val job = instanceTake.useJob()
+//                // jobが非nullになるまで待つ
+//                runBlocking {
+//                    instanceTake.waitForJob()
+//                }
+//                if(job!=null){
+//                    findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
+//                }else{
+//                    Toast.makeText(context, "Calculate now, wait a moment", Toast.LENGTH_SHORT).show()
+////                    Log.e(TAG, "Job is null. Handle the error or provide alternative logic.")
+//                }
+//            }
         }
 
 

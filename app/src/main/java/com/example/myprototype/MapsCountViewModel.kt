@@ -23,12 +23,21 @@ class MapsCountViewModel: ViewModel() {
 
     val isRequestComplete = MutableLiveData<Int>()
 
+    val isFirstPlaceComplete = MutableLiveData<Boolean>()
+    val isSecondPlaceComplete = MutableLiveData<Boolean>()
+    val isThirdPlaceComplete = MutableLiveData<Boolean>()
+
+
+
 
 
     init {
         // 初期値を設定
         visitCount.value = 0
         isRequestComplete.value =0
+        isFirstPlaceComplete.value = false
+        isSecondPlaceComplete.value = false
+        isThirdPlaceComplete.value = false
     }
 
     fun incrementVisitCount() {

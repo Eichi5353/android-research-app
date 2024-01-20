@@ -51,6 +51,11 @@
     <string name="position">"順位"</string>
     <string name="username">"ユーザー名"</string>
     <string name="point">"得点"</string>
+    <string name="answernum">"回答問題数"</string>
+
+
+    <!--    dialog2-->
+    <string name="dialog">"・この画面には戻れません\n・この写真を覚えてください\n・全く同じにとるほど高得点です\n・必ず画面を横にして撮影してください"</string>
 
 
 </resources>

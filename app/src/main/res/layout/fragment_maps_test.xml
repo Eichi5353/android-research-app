@@ -43,7 +43,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/aed02"
+                android:src="@drawable/aed"
                 android:layout_margin="0dp"
                 android:onClick="btn1_click"
                 android:scaleType="fitCenter"/>
@@ -53,7 +53,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/atm03"
+                android:src="@drawable/atm"
                 android:layout_margin="5dp"
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
@@ -64,7 +64,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/crecore01"
+                android:src="@drawable/crecore"
                 android:layout_margin="5dp"
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
@@ -75,7 +75,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/mama01"
+                android:src="@drawable/mama"
                 android:layout_margin="5dp"
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
@@ -86,7 +86,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/nitro01"
+                android:src="@drawable/nitro"
                 android:layout_margin="5dp"
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
@@ -97,7 +97,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/obj21"
+                android:src="@drawable/obj"
                 android:layout_margin="5dp"
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
@@ -108,7 +108,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/stone01"
+                android:src="@drawable/stone"
                 android:layout_margin="5dp"
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
@@ -119,7 +119,51 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/water02"
+                android:src="@drawable/water"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn9"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/arrow"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn10"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/door"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn11"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ichi"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
+
+            <ImageButton
+                android:id="@+id/btn12"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/phone"
                 android:layout_margin="5dp"
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
@@ -153,7 +197,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textSize="20dp"
-            android:text="経路に従って移動しながら\n下記の場所を見つけて撮影して"
+            android:text="経路を参考に移動するといいよ\n下記の場所を見つけたらその都度撮影して"
 
             />
     </LinearLayout>

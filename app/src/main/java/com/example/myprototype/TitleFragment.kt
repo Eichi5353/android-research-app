@@ -81,15 +81,18 @@ class TitleFragment : Fragment() {
         val user = auth.currentUser
         Log.d(TAG, "user: ${user}")
         view.findViewById<Button>(R.id.btn).setOnClickListener{
-            findNavController().navigate(R.id.action_titleFragment_to_showImgFragment)
+            findNavController().navigate(R.id.action_titleFragment_to_mapsTestFragment)
         }
         view.findViewById<Button>(R.id.btn_go_ranking).setOnClickListener{
             findNavController().navigate(R.id.action_titleFragment_to_rankingFragment)
         }
-
-        view.findViewById<Button>(R.id.btn_test).setOnClickListener{
-            findNavController().navigate(R.id.action_titleFragment_to_mapsTestFragment)
+        view.findViewById<Button>(R.id.btn_rule).setOnClickListener{
+            findNavController().navigate(R.id.action_titleFragment_to_ruleFragment)
         }
+
+//        view.findViewById<Button>(R.id.btn_test).setOnClickListener{
+//            findNavController().navigate(R.id.action_titleFragment_to_mapsTestFragment)
+//        }
         Log.d(TAG, "Hi")
         if(user != null){
             val username:String = user.displayName.toString()

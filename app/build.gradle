@@ -18,7 +18,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     //構文のエラー報告とか便利機能
     dataBinding{
@@ -92,6 +92,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.0.1'
     implementation 'androidx.annotation:annotation:1.4.0'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

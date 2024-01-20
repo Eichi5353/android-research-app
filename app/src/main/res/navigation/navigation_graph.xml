@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_titleFragment_to_mapsTestFragment"
             app:destination="@id/mapsTestFragment" />
+        <action
+            android:id="@+id/action_titleFragment_to_ruleFragment"
+            app:destination="@id/ruleFragment" />
     </fragment>
 
     <fragment
@@ -128,7 +131,23 @@
         android:id="@+id/resultAllFragment"
         android:name="com.example.myprototype.ResultAllFragment"
         android:label="fragment_result_all"
-        tools:layout="@layout/fragment_result_all" />
+        tools:layout="@layout/fragment_result_all" >
+        <action
+            android:id="@+id/action_resultAllFragment_to_rankingFragment"
+            app:destination="@id/rankingFragment" />
+        <action
+            android:id="@+id/action_resultAllFragment_to_titleFragment"
+            app:destination="@id/titleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ruleFragment"
+        android:name="com.example.myprototype.RuleFragment"
+        android:label="fragment_rule"
+        tools:layout="@layout/fragment_rule" >
+        <action
+            android:id="@+id/action_ruleFragment_to_titleFragment"
+            app:destination="@id/titleFragment" />
+    </fragment>
 
 
 </navigation>

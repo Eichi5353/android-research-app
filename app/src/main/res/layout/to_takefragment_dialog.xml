@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/darksalmon">
+
+    <TextView
+        android:id="@+id/messageTextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/take_caution1"
+        android:textSize="30dp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/backred"
+        android:paddingHorizontal="20dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/messageTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/okButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ok"
+        android:textSize="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

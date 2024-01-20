@@ -199,7 +199,7 @@ class RankingFragment : Fragment() {
                 var point_data = hashMapOf(
                     "totalPoint" to totalPoint
                 )
-                userRef.set(point_data)
+                userRef.update(point_data as Map<String, String>)
                 Log.d(TAG, "set totalPoint in ${username}")
             }
             .addOnFailureListener { exception ->
@@ -229,8 +229,11 @@ class MyRecyclerViewAdapter(val list: List<UserInfo>) : RecyclerView.Adapter<MyV
      */
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val userInfo = list[position]
+        Log.d(TAG,"userInfo:$userInfo")
         holder.positionText.text = (position + 1).toString()+"位"
         holder.usernameText.text = userInfo.name
+        holder.answernumText.text = userInfo.ansNum.toString()
+        Log.d(TAG,"Json ansNum : ${userInfo.ansNum.toString()}")
         val totalPoint = userInfo.point
         Log.d(TAG, "totalPoint: $totalPoint")
         holder.userpointText.text = totalPoint.toString()+"点" }
@@ -243,9 +246,10 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val positionText: TextView = itemView.findViewById(R.id.position)
     val usernameText: TextView = itemView.findViewById(R.id.p_username)
     val userpointText: TextView = itemView.findViewById(R.id.user_point)
+    val answernumText:TextView = itemView.findViewById(R.id.user_ansNum)
 
 }
 // データクラス
 data class UserData(val user_data: List<UserInfo>)
-data class UserInfo(val name: String, val point: Int)
+data class UserInfo(val name: String, val point: Int,val ansNum:Int)
 

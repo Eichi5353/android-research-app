@@ -7,11 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -60,6 +62,13 @@ class ResultAllFragment : Fragment() {
         activity?.run {
             mapsCountViewModel = ViewModelProvider(this).get(MapsCountViewModel::class.java)
         }
+        view.findViewById<Button>(R.id.btn_toRanking).setOnClickListener {
+            findNavController().navigate(R.id.action_resultAllFragment_to_rankingFragment)
+        }
+        view.findViewById<Button>(R.id.btn_title).setOnClickListener {
+            findNavController().navigate(R.id.action_resultAllFragment_to_titleFragment)
+        }
+
         return  view
     }
 
@@ -83,13 +92,24 @@ class ResultAllFragment : Fragment() {
                 //データベースに追加する得点データ
                 Log.d(TAG, "Point is ${resultInfo.score} Point")
                 val point_data = hashMapOf(
-                    "Point" to resultInfo.score.toString()
+                    "point" to resultInfo.score.toString()
                 )
+                Log.d(TAG, "ansNum is :${mapsCountViewModel.visitCount.value.toString()!!}")
+                val ansNum_data = hashMapOf(
+                    "answerNumber" to mapsCountViewModel.visitCount.value.toString()!!
+                )
+                val p_numRef = db.collection("users").document(username)
+                p_numRef
+                    .update(ansNum_data as Map<String, String>)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "コレクションに何問答えたか格納できた: ${username}:${mapsCountViewModel.visitCount.value.toString()}")
+                    }
+
                 val subRef = db.collection("users").document(username)
                     .collection("Places")
                 //.update(point_data as Map<String, String>)
                 //.addOnSuccessListener {
-                subRef.document(i.toString()+"_place")
+                subRef.document("place"+i.toString())
                     .set(point_data)
                     .addOnSuccessListener {
                         Log.d(TAG, "サブコレクションに格納できた: ${username}:${resultInfo.score}")

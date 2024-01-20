@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RuleFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ルール説明，注意点"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:padding="10dp"
+        android:background="@color/pink"/>
+<!--    ルールごとに-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="１.基本ルール"
+        android:textSize="30dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="あいうえお"
+        android:textSize="25dp"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginBottom="20dp"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="２.注意点"
+        android:textSize="30dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="あいうえお"
+        android:textSize="25dp"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginBottom="20dp"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="３."
+        android:textSize="30dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="あいうえお"
+        android:textSize="25dp"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginBottom="20dp"/>
+    <Button
+        android:id="@+id/btn_toTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="戻る"
+        android:textSize="25dp"
+        android:paddingHorizontal="10dp"
+        android:layout_gravity="center"/>
+
+
+</LinearLayout>

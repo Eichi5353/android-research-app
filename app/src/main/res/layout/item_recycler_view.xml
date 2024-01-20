@@ -7,10 +7,10 @@
     android:padding="10dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <TextView
             android:id="@+id/position"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textColor="@android:color/black"
             android:textSize="22sp"
@@ -18,19 +18,29 @@
 
         <TextView
             android:id="@+id/p_username"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textColor="@android:color/black"
             android:textSize="22sp"
-            android:layout_weight="2"/>
+            android:layout_weight="2"
+            android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/user_ansNum"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
 
         <TextView
             android:id="@+id/user_point"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:textColor="@android:color/black"
             android:textSize="22sp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:textAlignment="center"/>
     </LinearLayout>
 
 

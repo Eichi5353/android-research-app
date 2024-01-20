@@ -173,6 +173,17 @@ class TakeImgFragment2 : Fragment() {
             ivCamera?.setImageBitmap(bitmap)
 
             val query_file:String? = arguments?.getString("query_name")
+            Log.d(TAG,"query_fileName : $query_file")
+            if(query_file == "obj"){
+                mapsCountViewModel.isFirstPlaceComplete.value = true
+                Log.d(TAG,"isFirst True")
+            }else if (query_file == "aed"){
+                mapsCountViewModel.isSecondPlaceComplete.value = true
+                Log.d(TAG,"isSecond True")
+            }else if(query_file =="ichi"){
+                mapsCountViewModel.isThirdPlaceComplete.value =true
+            }
+
 //問題画像の位置情報をjsonファイルから取得
             val assetManager = context!!.assets
             val jsonInputStream = assetManager.open("BKC_data/$query_file.json")

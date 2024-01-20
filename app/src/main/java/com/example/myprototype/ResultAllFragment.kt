@@ -50,6 +50,7 @@ class ResultAllFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     var current_user: FirebaseUser? = null
+    var displayName:String =""
 
     private lateinit var mapsCountViewModel: MapsCountViewModel
 
@@ -63,7 +64,8 @@ class ResultAllFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_result_all, container, false)
         auth = Firebase.auth
         current_user = auth.currentUser
-        Log.d(TAG,"current user : $current_user")
+        displayName = current_user?.displayName.toString()
+        Log.d(TAG,"current user : $displayName")
         recyclerView = view.findViewById(R.id.recycler) // Viewをインフレートした後にrecyclerViewを初期化
         activity?.run {
             mapsCountViewModel = ViewModelProvider(this).get(MapsCountViewModel::class.java)
@@ -164,10 +166,10 @@ class ResultAllFragment : Fragment() {
 
         Log.d(TAG, "getFireStore")
 
-        val placeRef = db.collection("users").document(current_user.toString()).collection("Places")
+        val placeRef = db.collection("users").document(displayName.toString()).collection("Places")
         placeRef.get()
             .addOnSuccessListener {  placesSnapshot ->
-                Log.d(TAG, "Place collection get: ${current_user}")
+                Log.d(TAG, "Place collection get: ${displayName}")
                 totalPoint = 0
                 //場所毎に実行
                 for (placeDocument in placesSnapshot.documents) {
@@ -176,7 +178,12 @@ class ResultAllFragment : Fragment() {
                             Log.d(TAG, "placename:${placeDocument.id}")
                             val point = placeDocument.getLong("point")?.toLong()?: 0
                             Log.d(TAG, "point:${point}")
-                            totalPoint += point.toInt()
+                            if (point.toInt() == -1)
+                                totalPoint += 50
+                            else if (point.toInt() == -50)
+                                totalPoint =totalPoint
+                            else
+                                totalPoint += point.toInt()
                         }else {
                             Log.d(TAG, "上　ドキュメントが存在しません。")
                         }
@@ -186,7 +193,7 @@ class ResultAllFragment : Fragment() {
                 }
                 Log.d(TAG, "${current_user} Total Point: ${totalPoint}")
                 // 合計ポイントをUsersドキュメントに保存
-                var userRef = db.collection("users").document(current_user.toString())
+                var userRef = db.collection("users").document(displayName.toString())
                 var point_data = hashMapOf(
                     "totalPoint" to totalPoint
                 )
@@ -198,7 +205,7 @@ class ResultAllFragment : Fragment() {
                             userRef
                                 .set(point_data, SetOptions.merge())
                                 .addOnSuccessListener {
-                                    Log.d(TAG, "既存のデータを更新しました: $current_user: ${totalPoint}")
+                                    Log.d(TAG, "既存のデータを更新しました: ${displayName}d: ${totalPoint}")
                                 }
                                 .addOnFailureListener { e ->
                                     Log.w(TAG, "データ更新中にエラーが発生しました", e)
@@ -208,7 +215,7 @@ class ResultAllFragment : Fragment() {
                             userRef
                                 .set(point_data)
                                 .addOnSuccessListener {
-                                    Log.d(TAG, "新しいデータをセットしました: $current_user: ${totalPoint}")
+                                    Log.d(TAG, "新しいデータをセットしました: $displayName: ${totalPoint}")
                                 }
                                 .addOnFailureListener { e ->
                                     Log.w(TAG, "データセット中にエラーが発生しました", e)
@@ -219,7 +226,7 @@ class ResultAllFragment : Fragment() {
                         Log.w(TAG, "データ取得中にエラーが発生しました", e)
                     }
                 userRef.update(point_data as Map<String, String>)
-                Log.d(TAG, "set totalPoint in ${current_user}")
+                Log.d(TAG, "set totalPoint in ${displayName}")
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
@@ -257,8 +264,15 @@ class ResultRecyclerViewAdapter(val list: List<ResultInfo>) : RecyclerView.Adapt
         Glide.with(holder.itemView.context)
             .load(resultInfo.taking)
             .into(holder.takingImageView)
-        holder.scoretText.text = resultInfo.score + "点"
-        Log.d(TAG, "score: ${resultInfo.score}")
+        val ok = -1
+        if (resultInfo.score.toInt() == -1){
+            holder.scoretText.text = "OK! +50点"
+        }else if (resultInfo.score.toInt() == -50){
+            holder.scoretText.text = "だめ!違う場所　+0点"
+        }else{
+            holder.scoretText.text ="目的地：　"+ resultInfo.score + "点"
+            Log.d(TAG, "score: ${resultInfo.score}")
+        }
     }
 
     override fun getItemCount(): Int = list.size

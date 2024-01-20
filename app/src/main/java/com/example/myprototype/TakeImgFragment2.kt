@@ -180,7 +180,7 @@ class TakeImgFragment2 : Fragment() {
             }else if (query_file == "aed"){
                 mapsCountViewModel.isSecondPlaceComplete.value = true
                 Log.d(TAG,"isSecond True")
-            }else if(query_file =="ichi"){
+            }else if(query_file =="crecore"){
                 mapsCountViewModel.isThirdPlaceComplete.value =true
             }
 
@@ -211,9 +211,36 @@ class TakeImgFragment2 : Fragment() {
                 view?.findViewById<Button>(R.id.result_btn)?.setOnClickListener(){
             //            coroutineで類似度計算処理　Httpリクエスト
                     // Coroutineを使用して非同期処理を開始
-                    job = CoroutineScope(Dispatchers.Main).launch {
-                        // バックグラウンドで実行する処理（HTTPリクエストなど）
-                        sendRequest(POST, "/calculate-siamese", "img1", string_query, "img2", string_taking)
+                    if(query_file == "obj"||query_file == "aed"||query_file == "crecore") {
+                        job = CoroutineScope(Dispatchers.Main).launch {
+                            // バックグラウンドで実行する処理（HTTPリクエストなど）
+                            sendRequest(
+                                POST,
+                                "/calculate-siamese",
+                                "img1",
+                                string_query,
+                                "img2",
+                                string_taking
+                            )
+                        }
+                    }else{
+                        val distance = calculateDistance(take_gps!!.latitude,take_gps!!.longitude,query_gps!!.latitude,
+                            query_gps!!.longitude)
+                        Log.d(TAG,"query and taking gps distance: $distance km")
+                        Log.d(TAG, "add to queryList: ${query_bitmap}")
+                        mapsCountViewModel.queryList.add(query_bitmap!!)
+                        Log.d(TAG, "mapscount.query: ${mapsCountViewModel.queryList}")
+                        mapsCountViewModel.takingList.add(bitmap!!)
+                        Log.d(TAG, "add to takingList: ${bitmap}")
+                        Log.d(TAG, "mapscount.taking: ${mapsCountViewModel.takingList}")
+                        if(distance<=0.05 && responseData.toInt()>= 10) {
+                            val onGPS: Boolean = true
+                            val result = -1
+                            mapsCountViewModel.resultList.add(result.toString())
+                        }else{
+                            val result = -50
+                            mapsCountViewModel.resultList.add(result.toString())
+                        }
                     }
                     findNavController().navigate(R.id.action_takeImgFragment2_to_mapsTestFragment)
                 }
@@ -326,7 +353,7 @@ class TakeImgFragment2 : Fragment() {
                     val distance = calculateDistance(take_gps!!.latitude,take_gps!!.longitude,query_gps!!.latitude,
                         query_gps!!.longitude)
                     Log.d(TAG,"query and taking gps distance: $distance km")
-                    if(distance<=0.06 && responseData.toInt()>= 1){
+                    if(distance<=0.05 && responseData.toInt()>= 10){
                         val onGPS:Boolean = true
                         Log.d(TAG,"GPS is OK  on the field")
                         responseData = (responseData.toInt()/2+50).toString()

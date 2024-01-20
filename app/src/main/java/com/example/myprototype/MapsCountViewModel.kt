@@ -27,6 +27,9 @@ class MapsCountViewModel: ViewModel() {
     val isSecondPlaceComplete = MutableLiveData<Boolean>()
     val isThirdPlaceComplete = MutableLiveData<Boolean>()
 
+    val queryButtonTouchCount = MutableLiveData<Int>()
+
+
 
 
 
@@ -38,6 +41,7 @@ class MapsCountViewModel: ViewModel() {
         isFirstPlaceComplete.value = false
         isSecondPlaceComplete.value = false
         isThirdPlaceComplete.value = false
+        queryButtonTouchCount.value = 0
     }
 
     fun incrementVisitCount() {

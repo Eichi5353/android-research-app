@@ -326,7 +326,7 @@ class TakeImgFragment2 : Fragment() {
                     val distance = calculateDistance(take_gps!!.latitude,take_gps!!.longitude,query_gps!!.latitude,
                         query_gps!!.longitude)
                     Log.d(TAG,"query and taking gps distance: $distance km")
-                    if(distance<=0.06){
+                    if(distance<=0.06 && responseData.toInt()>= 1){
                         val onGPS:Boolean = true
                         Log.d(TAG,"GPS is OK  on the field")
                         responseData = (responseData.toInt()/2+50).toString()
@@ -338,7 +338,7 @@ class TakeImgFragment2 : Fragment() {
 
                     if (mapsCountViewModel.visitCount.value == 0) {
                         Log.e(TAG, "count is 0")
-                    } else{
+                    }else{
                         getActivity()?.runOnUiThread {
                             Log.d(TAG, "add to resultList ")
                             mapsCountViewModel.resultList.add(responseData)

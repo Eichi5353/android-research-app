@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
@@ -62,23 +63,25 @@ class RankingFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_ranking, container, false)
+        auth = Firebase.auth
+        user = auth.currentUser
+        username = user?.displayName
         recyclerView = view.findViewById(R.id.recycler) // Viewをインフレートした後にrecyclerViewを初期化
+//        sum_point()
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG,"onViewCreated")
-        auth = Firebase.auth
-        user = auth.currentUser
-        username = user?.displayName
+        sendRequest(POST,"get-data","collection_name","users")
         //adapter = MyRecyclerViewAdapter(emptyList()) // 初期化されたアダプターを設定
         //recyclerView.adapter = adapter
         //recyclerView.layoutManager = LinearLayoutManager(requireContext())
         //自分のTotalPointだけはここで計算してもいいかも
-        sum_point()
+
         //get-dataのurlに正しく飛べていない，Or get-dataのurlにエラーが生じている
-        sendRequest(POST,"get-data","collection_name","users")
+
         //sendRequest(GET,"user_data",null,null)
 
     }
@@ -199,12 +202,41 @@ class RankingFragment : Fragment() {
                 var point_data = hashMapOf(
                     "totalPoint" to totalPoint
                 )
+                userRef.get()
+                    .addOnSuccessListener { documentSnapshot ->
+//                        これ場合分けする意味ない？？？置換じゃダメな時はいつ？
+                        if (documentSnapshot.contains("totalPoint")) {
+                            // "answerNumber"フィールドが存在する場合は、既存のデータを更新
+                            userRef
+                                .set(point_data, SetOptions.merge())
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "既存のデータを更新しました: $username: ${totalPoint}")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "データ更新中にエラーが発生しました", e)
+                                }
+                        } else {
+                            // "answerNumber"フィールドが存在しない場合は新規にデータをセット
+                            userRef
+                                .set(point_data)
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "新しいデータをセットしました: $username: ${totalPoint}")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "データセット中にエラーが発生しました", e)
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "データ取得中にエラーが発生しました", e)
+                    }
                 userRef.update(point_data as Map<String, String>)
                 Log.d(TAG, "set totalPoint in ${username}")
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
             }
+
     }
 }
 

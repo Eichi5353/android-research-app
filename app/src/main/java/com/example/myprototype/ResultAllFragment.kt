@@ -1,6 +1,7 @@
 package com.example.myprototype
 
 import android.graphics.Bitmap
+import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -20,6 +21,8 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -46,9 +49,11 @@ class ResultAllFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
-    var user: FirebaseUser? = null
+    var current_user: FirebaseUser? = null
 
     private lateinit var mapsCountViewModel: MapsCountViewModel
+
+    var totalPoint:Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,7 +62,8 @@ class ResultAllFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_result_all, container, false)
         auth = Firebase.auth
-        user = auth.currentUser
+        current_user = auth.currentUser
+        Log.d(TAG,"current user : $current_user")
         recyclerView = view.findViewById(R.id.recycler) // Viewをインフレートした後にrecyclerViewを初期化
         activity?.run {
             mapsCountViewModel = ViewModelProvider(this).get(MapsCountViewModel::class.java)
@@ -68,7 +74,6 @@ class ResultAllFragment : Fragment() {
         view.findViewById<Button>(R.id.btn_title).setOnClickListener {
             findNavController().navigate(R.id.action_resultAllFragment_to_titleFragment)
         }
-
         return  view
     }
 
@@ -87,8 +92,8 @@ class ResultAllFragment : Fragment() {
             Log.d(TAG,"resultList : ${resultList}")
 
 //            得点をそのユーザに加算していく処理
-            if (user != null) {
-                val username: String = user!!.displayName.toString()
+            if (current_user != null) {
+                val username: String = current_user!!.displayName.toString()
                 //データベースに追加する得点データ
                 Log.d(TAG, "Point is ${resultInfo.score} Point")
                 val point_data = hashMapOf(
@@ -99,10 +104,32 @@ class ResultAllFragment : Fragment() {
                     "answerNumber" to mapsCountViewModel.visitCount.value.toString()!!
                 )
                 val p_numRef = db.collection("users").document(username)
-                p_numRef
-                    .update(ansNum_data as Map<String, String>)
-                    .addOnSuccessListener {
-                        Log.d(TAG, "コレクションに何問答えたか格納できた: ${username}:${mapsCountViewModel.visitCount.value.toString()}")
+                p_numRef.get()
+                    .addOnSuccessListener { documentSnapshot ->
+                        if (documentSnapshot.contains("answerNumber")) {
+                            // "answerNumber"フィールドが存在する場合は、既存のデータを更新
+                            p_numRef
+                                .set(ansNum_data, SetOptions.merge())
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "既存のデータを更新しました: $username: ${mapsCountViewModel.visitCount.value.toString()}")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "データ更新中にエラーが発生しました", e)
+                                }
+                        } else {
+                            // "answerNumber"フィールドが存在しない場合は新規にデータをセット
+                            p_numRef
+                                .set(ansNum_data)
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "新しいデータをセットしました: $username: ${mapsCountViewModel.visitCount.value.toString()}")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "データセット中にエラーが発生しました", e)
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "データ取得中にエラーが発生しました", e)
                     }
 
                 val subRef = db.collection("users").document(username)
@@ -120,35 +147,84 @@ class ResultAllFragment : Fragment() {
             } else
                 Log.d(TAG, "Could not find user")
         }
+        sum_point()
         Log.d(TAG,"resultList(after loop) : ${resultList}")
         val adapter = ResultRecyclerViewAdapter(resultList)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         //progressBar?.visibility = ProgressBar.GONE
+        val numText:TextView = view.findViewById<TextView>(R.id.txt_num)
+        val tPointText:TextView = view.findViewById<TextView>(R.id.txt_tpoint)
+        numText.setText("${mapsCountViewModel.visitCount.value}問")
+        tPointText.setText("${totalPoint}点")
+    }
 
-//for mapsCountViewModel.visitcount ....
+    fun sum_point() {
+        val db = FirebaseFirestore.getInstance()
 
-//        imgTest = view.findViewById(R.id.imageView4)
-//        imgTest2 = view.findViewById(R.id.imageView5)
-//        scoreText = view.findViewById(R.id.score_is)
-//
-//        scoreText = view.findViewById(R.id.score)
-//        progressBar = view?.findViewById(R.id.r_progressBar)
-//
-//        //問題画像
-//        query_bitmap = mapsCountViewModel.queryList[0]
-//        //撮影画像の取得
-//        taking_bitmap = mapsCountViewModel.takingList[0]
-//
-//        //確認用（問題画像）
-//        Glide.with(this)
-//            .load(query_bitmap)
-//            .into(imgTest!!)
-//        //確認用（撮影画像）
-//        Glide.with(this)
-//            .load(taking_bitmap)
-//            .into(imgTest2!!)
-//        scoreText!!.text = mapsCountViewModel.resultList[0] + "点！！"
+        Log.d(TAG, "getFireStore")
+
+        val placeRef = db.collection("users").document(current_user.toString()).collection("Places")
+        placeRef.get()
+            .addOnSuccessListener {  placesSnapshot ->
+                Log.d(TAG, "Place collection get: ${current_user}")
+                totalPoint = 0
+                //場所毎に実行
+                for (placeDocument in placesSnapshot.documents) {
+                    if (placeDocument.exists()) {
+                        if (placeDocument.contains("point") && placeDocument["point"] is Number) {
+                            Log.d(TAG, "placename:${placeDocument.id}")
+                            val point = placeDocument.getLong("point")?.toLong()?: 0
+                            Log.d(TAG, "point:${point}")
+                            totalPoint += point.toInt()
+                        }else {
+                            Log.d(TAG, "上　ドキュメントが存在しません。")
+                        }
+                    } else {
+                        Log.d(TAG, "ドキュメントが存在しません。")
+                    }
+                }
+                Log.d(TAG, "${current_user} Total Point: ${totalPoint}")
+                // 合計ポイントをUsersドキュメントに保存
+                var userRef = db.collection("users").document(current_user.toString())
+                var point_data = hashMapOf(
+                    "totalPoint" to totalPoint
+                )
+                userRef.get()
+                    .addOnSuccessListener { documentSnapshot ->
+//                        これ場合分けする意味ない？？？置換じゃダメな時はいつ？
+                        if (documentSnapshot.contains("totalPoint")) {
+                            // "answerNumber"フィールドが存在する場合は、既存のデータを更新
+                            userRef
+                                .set(point_data, SetOptions.merge())
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "既存のデータを更新しました: $current_user: ${totalPoint}")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "データ更新中にエラーが発生しました", e)
+                                }
+                        } else {
+                            // "answerNumber"フィールドが存在しない場合は新規にデータをセット
+                            userRef
+                                .set(point_data)
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "新しいデータをセットしました: $current_user: ${totalPoint}")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(TAG, "データセット中にエラーが発生しました", e)
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "データ取得中にエラーが発生しました", e)
+                    }
+                userRef.update(point_data as Map<String, String>)
+                Log.d(TAG, "set totalPoint in ${current_user}")
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+            }
+
     }
 }
 

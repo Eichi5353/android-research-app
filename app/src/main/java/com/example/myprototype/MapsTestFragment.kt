@@ -1,13 +1,14 @@
+
+
 package com.example.myprototype
 
 import android.Manifest
+import android.R
 import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -21,6 +22,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -30,24 +32,23 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.PolyUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
-import java.util.UUID
+import android.R.drawable as drawable1
 
 
 //ゴールまで行くと強制終了する？？
@@ -63,6 +64,9 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // 任意の値
     val TAG = "MapsFragment"
     var currentLatLng: LatLng? = null
+//    今の経路の線
+    private var currentPolyline: Polyline? = null
+    private var currentMaker: Marker? = null
 
     private var lastButtonClicked: ImageButton? = null
     lateinit var queryBundle: Bundle
@@ -70,7 +74,11 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
     private var response: String? = null
 
     var frag =0
-    override fun onCreate(savedInstanceState: Bundle?) {
+    var ismakeApiFrag = false
+
+    var imageResourceId = null
+    var query_iButton: ImageButton? = null
+        override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
     override fun onCreateView(
@@ -78,6 +86,10 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val context = requireContext()
+        context.let {
+            val a = drawable1
+        }
         val view = inflater.inflate(R.layout.fragment_maps_test, container, false)
 
         checkLocationPermission()
@@ -152,41 +164,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                 findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
             else
                 Toast.makeText(context, "Calculate now, wait a moment and click again", Toast.LENGTH_LONG).show()
-
-
-//            runBlocking {
-//                // 非同期処理が完了するまで待つ
-//                val instanceTake = TakeImgFragment2()
-//                val job = instanceTake.useJob()
-//                // jobが非nullになるまで待つ
-//                runBlocking {
-//                    instanceTake.waitForJob()
-//                }
-//                if(job!=null){
-//                    findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
-//                }else{
-//                    Toast.makeText(context, "Calculate now, wait a moment", Toast.LENGTH_SHORT).show()
-////                    Log.e(TAG, "Job is null. Handle the error or provide alternative logic.")
-//                }
-//            }
         }
-
-
-//        // パーミッションがすでに許可されている場合、GPSを使用する処理を続行
-//        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-//
-//        fusedLocationClient.lastLocation
-//            .addOnSuccessListener { location: Location? ->
-//                // 現在地を取得できた場合の処理
-//                location?.let {
-//                    currentLatLng = LatLng(it.latitude, it.longitude)//現在地
-//                    Log.d(TAG,"current location: ${currentLatLng}")
-//                    mMap.addMarker(MarkerOptions().position(currentLatLng!!).title("Current Location"))
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng!!, 15f))
-//
-//                    makeApiRequest()
-//                }
-//            }
     }
     override fun onMapReady(map: GoogleMap) {
         mMap = map
@@ -226,110 +204,112 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
     }
 
     private fun makeApiRequest() {
-        GlobalScope.launch(Dispatchers.IO) {
-            // バックグラウンドで実行したい処理
-            //ここでもうおかしい
-//            Log.d(TAG, "current location(beforeURL): ${currentLatLng}")
-            Log.d(TAG,"isFirst: ${mapsCountViewModel.isFirstPlaceComplete.value}")
-            Log.d(TAG,"isSecond: ${mapsCountViewModel.isSecondPlaceComplete.value}")
-            Log.d(TAG,"isThird: ${mapsCountViewModel.isThirdPlaceComplete.value}")
-            Log.d(TAG,"frag: ${frag}")
-            Log.d(TAG,"cuurent Gps: ${currentLatLng}")
+        if (!ismakeApiFrag) {
+            ismakeApiFrag = true
+            GlobalScope.launch(Dispatchers.IO) {
+                // バックグラウンドで実行したい処理
+                //ここでもうおかしい
+                //            Log.d(TAG, "current location(beforeURL): ${currentLatLng}")
+                Log.d(TAG, "isFirst: ${mapsCountViewModel.isFirstPlaceComplete.value}")
+                Log.d(TAG, "isSecond: ${mapsCountViewModel.isSecondPlaceComplete.value}")
+                Log.d(TAG, "isThird: ${mapsCountViewModel.isThirdPlaceComplete.value}")
+                Log.d(TAG, "frag: ${frag}")
+                Log.d(TAG, "cuurent Gps: ${currentLatLng}")
 
 
-            if(mapsCountViewModel.isFirstPlaceComplete.value ==true && mapsCountViewModel.isSecondPlaceComplete.value ==false
-                && mapsCountViewModel.isThirdPlaceComplete.value ==false ){
-                response = URL(
-                    "https://maps.googleapis.com/maps/api/directions/json?" +
-                            "origin=34.98252,135.96468" +
-                            //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
-                            "&destination=34.98125,135.96258" +//near aed
-                            //                   crecore "34.97948,135.96404" +
-                            "&mode=walking" +
-                            //なくてよい？                                            Nitro                ８０前            アーク前
-                            "&waypoints=34.98182,135.96356|34.98094,135.96348" +
-                            "&key=${APIKey}"
-                )
-                    .readText()
-                frag =1
-            }else if(mapsCountViewModel.isFirstPlaceComplete.value ==true && mapsCountViewModel.isSecondPlaceComplete.value ==true
-                && mapsCountViewModel.isThirdPlaceComplete.value ==false ){
-                response = URL(
-                    "https://maps.googleapis.com/maps/api/directions/json?" +
-                            "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +//34.98125,135.96258"+
-                            //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
-                            "&destination=34.97948,135.96404" +//crecore
-                            //                   crecore "34.97948,135.96404" +
-                            "&mode=walking" +
-                            //なくてよい？                                            Nitro                ８０前            アーク前
-                            "&waypoints=34.98090,135.96208|34.97979,135.96216|34.97863,135.96352" +
-                            "&key=${APIKey}"
-                )
-                    .readText()
-                frag =2
-            }else if(mapsCountViewModel.isFirstPlaceComplete.value ==true && mapsCountViewModel.isSecondPlaceComplete.value ==true
-                && mapsCountViewModel.isThirdPlaceComplete.value ==true){
-
-            }else {
-                response = URL(
-                    "https://maps.googleapis.com/maps/api/directions/json?" +
-                            "origin=34.97948,135.96404" +
-                            //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
-                            "&destination=34.98252,135.96468" +//obj
-                            //                   crecore "34.97948,135.96404" +
-                            "&mode=walking" +
-                            //なくてよい？                                            Nitro                ８０前            アーク前
-                            "&waypoints=34.98087,135.96370|34.98089,135.96474" +
-                            //                    "34.97983,135.96478|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98046,135.96381|34.98090,135.96371|34.98134,135.96472|34.98255,135.96457|34.98181,135.96349|" +
-                            //AED
-                            //                    "34.98085,135.96305|34.98122,135.96253|34.98053,135.96241" +
-                            //                    "34.98259,135.96450|34.98182,135.96345|34.98081,135.96292|34.98088,135.96204" +
-                            "&key=${APIKey}"
-                )
-                    .readText()
-
-            }
-
-            //            Log.d(TAG,"response Json: ${response}")
-            withContext(Dispatchers.Main) {
-                // UIの更新などを行う
-                var points: String? = null
-                val jsonResponse = JSONObject(response)
-                //                Log.d(TAG,"response Json: ${jsonResponse}")
-                val routes = jsonResponse.getJSONArray("routes")
-                //                Log.d(TAG,"routes: ${routes}")
-
-                if (routes.length() > 0) {
-                    val legs = routes.getJSONObject(0).getJSONArray("legs")
-                    if (legs.length() > 0) {
-                        val steps = legs.getJSONObject(0).getJSONArray("steps")
-                        // ここで取得した情報を使用する処理を行う
-                        val route = routes.getJSONObject(0) // 最初の経路を取得
-                        points = route.getJSONObject("overview_polyline").getString("points")
-                        //                        Log.d(TAG, "points : ${points}")
-
-                    } else {
-                        Log.e(TAG,"error legs is empty")
-                        // エラー処理: "legs"が空の場合
-                    }
+                if (mapsCountViewModel.isFirstPlaceComplete.value == true && mapsCountViewModel.isSecondPlaceComplete.value == false
+                    && mapsCountViewModel.isThirdPlaceComplete.value == false
+                ) {
+                    response = URL(
+                        "https://maps.googleapis.com/maps/api/directions/json?" +
+                                "origin=34.98252,135.96468" +
+                                //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                "&destination=34.98125,135.96258" +//near aed
+                                //                   crecore "34.97948,135.96404" +
+                                "&mode=walking" +
+                                //なくてよい？                                            Nitro                ８０前            アーク前
+                                "&waypoints=34.98182,135.96356|34.98094,135.96348" +
+                                "&key=${APIKey}"
+                    )
+                        .readText()
+                    frag = 1
+                } else if (mapsCountViewModel.isFirstPlaceComplete.value == true && mapsCountViewModel.isSecondPlaceComplete.value == true
+                ) {
+                    response = URL(
+                        "https://maps.googleapis.com/maps/api/directions/json?" +
+                                "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +//34.98125,135.96258"+
+                                //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                "&destination=34.97948,135.96404" +//crecore
+                                //                   crecore "34.97948,135.96404" +
+                                "&mode=walking" +
+                                //なくてよい？                                            Nitro                ８０前            アーク前
+                                "&waypoints=34.98090,135.96208|34.97979,135.96216|34.97863,135.96352" +
+                                "&key=${APIKey}"
+                    )
+                        .readText()
+                    frag = 2
                 } else {
-                    Log.e(TAG,"error routes is empty")
+                    response = URL(
+                        "https://maps.googleapis.com/maps/api/directions/json?" +
+                                "origin=34.97948,135.96404" +
+                                //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                "&destination=34.98252,135.96468" +//obj
+                                //                   crecore "34.97948,135.96404" +
+                                "&mode=walking" +
+                                //なくてよい？                                            Nitro                ８０前            アーク前
+                                "&waypoints=34.98087,135.96370|34.98089,135.96474" +
+                                //                    "34.97983,135.96478|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98046,135.96381|34.98090,135.96371|34.98134,135.96472|34.98255,135.96457|34.98181,135.96349|" +
+                                //AED
+                                //                    "34.98085,135.96305|34.98122,135.96253|34.98053,135.96241" +
+                                //                    "34.98259,135.96450|34.98182,135.96345|34.98081,135.96292|34.98088,135.96204" +
+                                "&key=${APIKey}"
+                    )
+                        .readText()
 
-                    // エラー処理: "routes"が空の場合
                 }
-                //                val route = routes.getJSONObject(0) // 最初の経路を取得
-                //                val points = route.getJSONObject("overview_polyline").getString("points")
 
-                // メインスレッドで実行すること
-                //                経路の色設定
-                Log.d(TAG,"points: ${points}")
-                if(points!=null){
-                    val polyline = PolylineOptions()
-                        .addAll(PolyUtil.decode(points))
-                        .color(Color.RED)
-                        .width(10f)
+                //            Log.d(TAG,"response Json: ${response}")
+                withContext(Dispatchers.Main) {
+                    // UIの更新などを行う
+                    var points: String? = null
+                    val jsonResponse = JSONObject(response)
+                    //                Log.d(TAG,"response Json: ${jsonResponse}")
+                    val routes = jsonResponse.getJSONArray("routes")
+                    //                Log.d(TAG,"routes: ${routes}")
 
-                    mMap.addPolyline(polyline)
+                    if (routes.length() > 0) {
+                        val legs = routes.getJSONObject(0).getJSONArray("legs")
+                        if (legs.length() > 0) {
+                            val steps = legs.getJSONObject(0).getJSONArray("steps")
+                            // ここで取得した情報を使用する処理を行う
+                            val route = routes.getJSONObject(0) // 最初の経路を取得
+                            points = route.getJSONObject("overview_polyline").getString("points")
+                            //                        Log.d(TAG, "points : ${points}")
+
+                        } else {
+                            Log.e(TAG, "error legs is empty")
+                            // エラー処理: "legs"が空の場合
+                        }
+                    } else {
+                        Log.e(TAG, "error routes is empty")
+
+                        // エラー処理: "routes"が空の場合
+                    }
+                    //                val route = routes.getJSONObject(0) // 最初の経路を取得
+                    //                val points = route.getJSONObject("overview_polyline").getString("points")
+
+                    // メインスレッドで実行すること
+                    //                経路の色設定
+                    Log.d(TAG, "points: ${points}")
+                    if (points != null) {
+                        currentPolyline?.remove()
+                        val polyline = PolylineOptions()
+                            .addAll(PolyUtil.decode(points))
+                            .color(Color.RED)
+                            .width(10f)
+
+                        currentPolyline = mMap.addPolyline(polyline)
+                    }
                 }
             }
         }
@@ -531,8 +511,10 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                     if (location != null) {
                         currentLatLng = LatLng(location.latitude, location.longitude)
                     }
-                    mMap.clear()
-                    mMap.addMarker(MarkerOptions().position(currentLatLng!!).title("Current Location"))
+//                    mMap.clear()
+                    Log.d(TAG,"currentLocation: $currentLatLng")
+                    currentMaker?.remove()
+                    currentMaker = mMap.addMarker(MarkerOptions().position(currentLatLng!!).title("Current Location"))
 //                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng!!))
                     makeApiRequest()  // 位置情報が更新されるたびに経路を再取得
                 }

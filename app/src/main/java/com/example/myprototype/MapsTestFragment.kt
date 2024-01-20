@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -41,6 +42,7 @@ import com.google.maps.android.PolyUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
@@ -53,7 +55,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 //    private lateinit var mapView: MapView
     private val markerList = mutableListOf<MapMakerInfo>()
-
+    val a = 0
 //    val APIKey = "AIzaSyCprjoQjsq3IeA3cRmkjTsNl3ahzPbfpSA"
     val APIKey = "AIzaSyCNx31A-f_VyABih0-OETfZ6BicvbJJgFY"
     //    val response = null
@@ -92,40 +94,60 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         view.findViewById<ImageButton>(R.id.btn1).setOnClickListener {
             val btn = view.findViewById<ImageButton>(R.id.btn1)
-            showImageDialog("aed02.jpg",btn)
+            showImageDialog("aed02",btn)
         }
         view.findViewById<ImageButton>(R.id.btn2).setOnClickListener {
             val btn2 = view.findViewById<ImageButton>(R.id.btn2)
-            showImageDialog("atm03.jpg",btn2)
+            showImageDialog("atm03",btn2)
         }
         view.findViewById<ImageButton>(R.id.btn3).setOnClickListener {
             val btn3 = view.findViewById<ImageButton>(R.id.btn3)
-            showImageDialog("crecore01.jpg",btn3)
+            showImageDialog("crecore01",btn3)
         }
         view.findViewById<ImageButton>(R.id.btn4).setOnClickListener {
             val btn4 = view.findViewById<ImageButton>(R.id.btn4)
-            showImageDialog("mama01.jpg",btn4)
+            showImageDialog("mama01",btn4)
         }
         view.findViewById<ImageButton>(R.id.btn5).setOnClickListener {
             val btn5 = view.findViewById<ImageButton>(R.id.btn5)
-            showImageDialog("nitro01.jpg",btn5)
+            showImageDialog("nitro01",btn5)
         }
         view.findViewById<ImageButton>(R.id.btn6).setOnClickListener {
             val btn6 = view.findViewById<ImageButton>(R.id.btn6)
-            showImageDialog("obj21.jpg",btn6)
+            showImageDialog("obj21",btn6)
         }
         view.findViewById<ImageButton>(R.id.btn7).setOnClickListener {
             val btn7 = view.findViewById<ImageButton>(R.id.btn7)
-            showImageDialog("stone01.jpg",btn7)
+            showImageDialog("stone01",btn7)
         }
         view.findViewById<ImageButton>(R.id.btn8).setOnClickListener {
             val btn8 = view.findViewById<ImageButton>(R.id.btn2)
-            showImageDialog("water02.jpg",btn8)
+            showImageDialog("water02",btn8)
         }
 
 
         view.findViewById<Button>(R.id.btn_finish).setOnClickListener {
-            findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
+            if (mapsCountViewModel.isRequestComplete.value==mapsCountViewModel.visitCount.value)
+                findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
+            else
+                Toast.makeText(context, "Calculate now, wait a moment and click again", Toast.LENGTH_LONG).show()
+
+
+//            runBlocking {
+//                // 非同期処理が完了するまで待つ
+//                val instanceTake = TakeImgFragment2()
+//                val job = instanceTake.useJob()
+//                // jobが非nullになるまで待つ
+//                runBlocking {
+//                    instanceTake.waitForJob()
+//                }
+//                if(job!=null){
+//                    findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
+//                }else{
+//                    Toast.makeText(context, "Calculate now, wait a moment", Toast.LENGTH_SHORT).show()
+////                    Log.e(TAG, "Job is null. Handle the error or provide alternative logic.")
+//                }
+//            }
         }
 
 
@@ -357,7 +379,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
         val dialogImageView: ImageView = dialog.findViewById(R.id.dialogImageView)
         // Glideを使用してAssetsから画像を読み込んでImageViewに表示
         Glide.with(requireContext())
-            .load("file:///android_asset/BKC/$imageFileName")
+            .load("file:///android_asset/BKC/$imageFileName.jpg")
             .into(dialogImageView)
         dialog.show()
         dialog.findViewById<Button>(R.id.btn_openCamera).setOnClickListener {

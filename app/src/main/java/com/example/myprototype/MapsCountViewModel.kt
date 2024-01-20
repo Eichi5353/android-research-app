@@ -21,14 +21,20 @@ class MapsCountViewModel: ViewModel() {
 //    撮影画像リスト
     val takingList = mutableListOf<Bitmap>()
 
+    val isRequestComplete = MutableLiveData<Int>()
+
+
 
     init {
         // 初期値を設定
         visitCount.value = 0
+        isRequestComplete.value =0
     }
 
     fun incrementVisitCount() {
         // LiveDataの値を更新
         visitCount.value = visitCount.value?.plus(1)
     }
+    // ViewModel内でLiveDataを宣言
+
 }

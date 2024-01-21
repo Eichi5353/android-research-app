@@ -220,7 +220,9 @@ class TakeImgFragment2 : Fragment() {
                                 "img1",
                                 string_query,
                                 "img2",
-                                string_taking
+                                string_taking,
+                                "fName",
+                                query_file
                             )
                         }
                     }else{
@@ -302,7 +304,7 @@ class TakeImgFragment2 : Fragment() {
         return encodeImage
     }
 
-    fun sendRequest(type: String, method: String, paramname1: String?, value1: String?,paramname2: String?, value2: String?) {
+    fun sendRequest(type: String, method: String, paramname1: String?, value1: String?,paramname2: String?, value2: String?,fileName: String?,value3:String?) {
         /* if url is of our get request, it should not have parameters according to our implementation.
         * But our post request should have 'name' parameter. */
         val fullURL = url + "/" + method //+ if (param == null) "" else "/$param"
@@ -325,6 +327,7 @@ class TakeImgFragment2 : Fragment() {
             val formBody: RequestBody = FormBody.Builder()
                 .add(paramname1!!, value1!!)//ここで値を渡すことができるparamnameをpython側で指定すればvalueを得られる
                 .add(paramname2!!, value2!!)//ここで値を渡すことができるparamnameをpython側で指定すればvalueを得られる
+                .add(fileName!!,value3!!)
                 .build()
             Request.Builder()
                 .url(fullURL)

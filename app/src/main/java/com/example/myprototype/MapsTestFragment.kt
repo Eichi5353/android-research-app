@@ -157,6 +157,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 
 
         view.findViewById<Button>(R.id.btn_finish).setOnClickListener {
+            Log.d(TAG,"Toast no bubunb で：${mapsCountViewModel.isRequestComplete.value} ==?? ${mapsCountViewModel.queryButtonTouchCount.value}")
             if (mapsCountViewModel.isRequestComplete.value==mapsCountViewModel.queryButtonTouchCount.value)
                 findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
             else

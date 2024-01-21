@@ -56,6 +56,10 @@ class ResultAllFragment : Fragment() {
 
     var totalPoint:Int = 0
 
+    var numText: TextView? = null
+    var tPointText: TextView? =  null
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,6 +69,10 @@ class ResultAllFragment : Fragment() {
         auth = Firebase.auth
         current_user = auth.currentUser
         displayName = current_user?.displayName.toString()
+
+        numText = view!!.findViewById<TextView>(R.id.txt_num)
+        tPointText =view!!.findViewById<TextView>(R.id.txt_tpoint)
+
         Log.d(TAG,"current user : $displayName")
         recyclerView = view.findViewById(R.id.recycler) // Viewをインフレートした後にrecyclerViewを初期化
         activity?.run {
@@ -134,31 +142,27 @@ class ResultAllFragment : Fragment() {
                         Log.w(TAG, "データ取得中にエラーが発生しました", e)
                     }
 
-                val subRef = db.collection("users").document(username)
-                    .collection("Places")
-                //.update(point_data as Map<String, String>)
-                //.addOnSuccessListener {
-                subRef.document("place"+i.toString())
-                    .set(point_data)
-                    .addOnSuccessListener {
-                        Log.d(TAG, "サブコレクションに格納できた: ${username}:${resultInfo.score}")
-                    }
-                    .addOnFailureListener{ e ->
-                        Log.w(TAG, "Error adding document", e)
-                    }
+//                val subRef = db.collection("users").document(username)
+//                    .collection("Places")
+//                //.update(point_data as Map<String, String>)
+//                //.addOnSuccessListener {
+//                subRef.document("place"+i.toString())
+//                    .set(point_data)
+//                    .addOnSuccessListener {
+//                        Log.d(TAG, "サブコレクションに格納できた: ${username}:${resultInfo.score}")
+//                    }
+//                    .addOnFailureListener{ e ->
+//                        Log.w(TAG, "Error adding document", e)
+//                    }
             } else
                 Log.d(TAG, "Could not find user")
         }
-        sum_point()
         Log.d(TAG,"resultList(after loop) : ${resultList}")
         val adapter = ResultRecyclerViewAdapter(resultList)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        sum_point()
         //progressBar?.visibility = ProgressBar.GONE
-        val numText:TextView = view.findViewById<TextView>(R.id.txt_num)
-        val tPointText:TextView = view.findViewById<TextView>(R.id.txt_tpoint)
-        numText.setText("${mapsCountViewModel.visitCount.value}問")
-        tPointText.setText("${totalPoint}点")
     }
 
     fun sum_point() {
@@ -170,13 +174,28 @@ class ResultAllFragment : Fragment() {
         placeRef.get()
             .addOnSuccessListener {  placesSnapshot ->
                 Log.d(TAG, "Place collection get: ${displayName}")
+//                Log.d(TAG, "Place Snapshot: ${placesSnapshot.documents}")
+
                 totalPoint = 0
                 //場所毎に実行
                 for (placeDocument in placesSnapshot.documents) {
                     if (placeDocument.exists()) {
-                        if (placeDocument.contains("point") && placeDocument["point"] is Number) {
+                        val rawValue = placeDocument["point"]
+
+                        val intValue = when (rawValue) {
+                            is Number -> rawValue.toInt() // If it's already a Number, directly convert
+                            is String -> rawValue.toIntOrNull() // If it's a String, attempt to convert, returns null if not a valid Int
+                            else -> null // Handle other types as needed or leave it as null
+                        }
+
+                        if (intValue != null) {
                             Log.d(TAG, "placename:${placeDocument.id}")
-                            val point = placeDocument.getLong("point")?.toLong()?: 0
+                            val point = when (rawValue) {
+                                is Number -> rawValue.toInt()  // If it's already a Number, directly convert
+                                is String -> rawValue.toIntOrNull() ?: 0  // If it's a String, attempt to convert, use 0 if not a valid Long
+                                else -> 0  // Default value if the value is neither Number nor String
+                            }
+//                            val point = placeDocument.getLong("point")?.toLong()?: 0
                             Log.d(TAG, "point:${point}")
                             if (point.toInt() == -1)
                                 totalPoint += 50
@@ -184,7 +203,18 @@ class ResultAllFragment : Fragment() {
                                 totalPoint =totalPoint
                             else
                                 totalPoint += point.toInt()
-                        }else {
+                        }
+//                        if (placeDocument.contains("point") && placeDocument["point"] is Number) {
+//                            Log.d(TAG, "placename:${placeDocument.id}")
+//                            val point = placeDocument.getLong("point")?.toLong()?: 0
+//                            Log.d(TAG, "point:${point}")
+//                            if (point.toInt() == -1)
+//                                totalPoint += 50
+//                            else if (point.toInt() == -50)
+//                                totalPoint =totalPoint
+//                            else
+//                                totalPoint += point.toInt()
+                        else {
                             Log.d(TAG, "上　ドキュメントが存在しません。")
                         }
                     } else {
@@ -206,6 +236,11 @@ class ResultAllFragment : Fragment() {
                                 .set(point_data, SetOptions.merge())
                                 .addOnSuccessListener {
                                     Log.d(TAG, "既存のデータを更新しました: ${displayName}d: ${totalPoint}")
+                                    Log.d(TAG,"${mapsCountViewModel.visitCount.value}問")
+                                    Log.d(TAG,"${totalPoint}点")
+
+                                    numText?.setText("${mapsCountViewModel.visitCount.value.toString()}問")
+                                    tPointText?.setText("${totalPoint.toString()}点")
                                 }
                                 .addOnFailureListener { e ->
                                     Log.w(TAG, "データ更新中にエラーが発生しました", e)
@@ -216,6 +251,11 @@ class ResultAllFragment : Fragment() {
                                 .set(point_data)
                                 .addOnSuccessListener {
                                     Log.d(TAG, "新しいデータをセットしました: $displayName: ${totalPoint}")
+                                    Log.d(TAG,"${mapsCountViewModel.visitCount.value}問")
+                                    Log.d(TAG,"${totalPoint}点")
+
+                                    numText?.setText("${mapsCountViewModel.visitCount.value}問")
+                                    tPointText?.setText("${totalPoint}点")
                                 }
                                 .addOnFailureListener { e ->
                                     Log.w(TAG, "データセット中にエラーが発生しました", e)
@@ -232,7 +272,9 @@ class ResultAllFragment : Fragment() {
                 Log.d(TAG, "get failed with ", exception)
             }
 
+
     }
+
 }
 
 

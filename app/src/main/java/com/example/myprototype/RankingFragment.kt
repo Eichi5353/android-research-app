@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -31,12 +32,17 @@ import kotlin.system.measureTimeMillis
 //Cloud Runのコードがまだ古いもの
 
 class RankingFragment : Fragment() {
+    private lateinit var mapsCountViewModel: MapsCountViewModel
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: MyRecyclerViewAdapter
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     var user: FirebaseUser? = null
     var username:String?=""
+    var displayName:String?=""
+    var totalPoint: Int? = null
+
     var time:Long = 0
     //var responseData: JSONArray? = null
     //flask local
@@ -63,11 +69,28 @@ class RankingFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_ranking, container, false)
+        activity?.run {
+            mapsCountViewModel = ViewModelProvider(this).get(MapsCountViewModel::class.java)
+        }
         auth = Firebase.auth
         user = auth.currentUser
         username = user?.displayName
+        displayName = user?.displayName
         recyclerView = view.findViewById(R.id.recycler) // Viewをインフレートした後にrecyclerViewを初期化
-//        sum_point()
+
+
+        val Ref = db.collection("users").document(displayName.toString())
+        Ref.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    // ドキュメントが存在する場合
+                    if (documentSnapshot.contains("totalPoint"))
+                        Log.d(TAG,"totalPoint exit")
+                    else
+                        sum_point()
+                }
+            }
+
         return view
     }
 
@@ -176,29 +199,60 @@ class RankingFragment : Fragment() {
 
         Log.d(TAG, "getFireStore")
 
-        val placeRef = db.collection("users").document(username.toString()).collection("Places")
+        val placeRef = db.collection("users").document(displayName.toString()).collection("Places")
         placeRef.get()
             .addOnSuccessListener {  placesSnapshot ->
-                Log.d(TAG, "Place collection get: ${username}")
-                var totalPoint = 0
+                Log.d(TAG, "Place collection get: ${displayName}")
+//                Log.d(TAG, "Place Snapshot: ${placesSnapshot.documents}")
+
+                totalPoint = 0
                 //場所毎に実行
                 for (placeDocument in placesSnapshot.documents) {
                     if (placeDocument.exists()) {
-                        if (placeDocument.contains("point") && placeDocument["point"] is Number) {
+                        val rawValue = placeDocument["point"]
+
+                        val intValue = when (rawValue) {
+                            is Number -> rawValue.toInt() // If it's already a Number, directly convert
+                            is String -> rawValue.toIntOrNull() // If it's a String, attempt to convert, returns null if not a valid Int
+                            else -> null // Handle other types as needed or leave it as null
+                        }
+
+                        if (intValue != null) {
                             Log.d(TAG, "placename:${placeDocument.id}")
-                            val point = placeDocument.getLong("point")?.toLong()?: 0
+                            val point = when (rawValue) {
+                                is Number -> rawValue.toInt()  // If it's already a Number, directly convert
+                                is String -> rawValue.toIntOrNull() ?: 0  // If it's a String, attempt to convert, use 0 if not a valid Long
+                                else -> 0  // Default value if the value is neither Number nor String
+                            }
+//                            val point = placeDocument.getLong("point")?.toLong()?: 0
                             Log.d(TAG, "point:${point}")
-                            totalPoint += point.toInt()
-                        }else {
+                            if (point.toInt() == -1)
+                                totalPoint = totalPoint!! + 50
+                            else if (point.toInt() == -50)
+                                totalPoint =totalPoint
+                            else
+                                totalPoint = totalPoint!! + point.toInt()
+                        }
+//                        if (placeDocument.contains("point") && placeDocument["point"] is Number) {
+//                            Log.d(TAG, "placename:${placeDocument.id}")
+//                            val point = placeDocument.getLong("point")?.toLong()?: 0
+//                            Log.d(TAG, "point:${point}")
+//                            if (point.toInt() == -1)
+//                                totalPoint += 50
+//                            else if (point.toInt() == -50)
+//                                totalPoint =totalPoint
+//                            else
+//                                totalPoint += point.toInt()
+                        else {
                             Log.d(TAG, "上　ドキュメントが存在しません。")
                         }
                     } else {
                         Log.d(TAG, "ドキュメントが存在しません。")
                     }
                 }
-                Log.d(TAG, "${username} Total Point: ${totalPoint}")
+                Log.d(TAG, "${user} Total Point: ${totalPoint}")
                 // 合計ポイントをUsersドキュメントに保存
-                var userRef = db.collection("users").document(username.toString())
+                var userRef = db.collection("users").document(displayName.toString())
                 var point_data = hashMapOf(
                     "totalPoint" to totalPoint
                 )
@@ -210,7 +264,9 @@ class RankingFragment : Fragment() {
                             userRef
                                 .set(point_data, SetOptions.merge())
                                 .addOnSuccessListener {
-                                    Log.d(TAG, "既存のデータを更新しました: $username: ${totalPoint}")
+                                    Log.d(TAG, "既存のデータを更新しました: ${displayName}d: ${totalPoint}")
+                                    Log.d(TAG,"${mapsCountViewModel.visitCount.value}問")
+                                    Log.d(TAG,"${totalPoint}点")
                                 }
                                 .addOnFailureListener { e ->
                                     Log.w(TAG, "データ更新中にエラーが発生しました", e)
@@ -220,7 +276,9 @@ class RankingFragment : Fragment() {
                             userRef
                                 .set(point_data)
                                 .addOnSuccessListener {
-                                    Log.d(TAG, "新しいデータをセットしました: $username: ${totalPoint}")
+                                    Log.d(TAG, "新しいデータをセットしました: $displayName: ${totalPoint}")
+                                    Log.d(TAG,"${mapsCountViewModel.visitCount.value}問")
+                                    Log.d(TAG,"${totalPoint}点")
                                 }
                                 .addOnFailureListener { e ->
                                     Log.w(TAG, "データセット中にエラーが発生しました", e)
@@ -231,11 +289,12 @@ class RankingFragment : Fragment() {
                         Log.w(TAG, "データ取得中にエラーが発生しました", e)
                     }
                 userRef.update(point_data as Map<String, String>)
-                Log.d(TAG, "set totalPoint in ${username}")
+                Log.d(TAG, "set totalPoint in ${displayName}")
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
             }
+
 
     }
 }

@@ -81,6 +81,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
     var query_iButton: ImageButton? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -106,6 +107,8 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG,"onCreated queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
+
 //        view.findViewById<ImageButton>(R.id.btn1).setOnClickListener {
 //            val btn = view.findViewById<ImageButton>(R.id.btn1)
 //            showImageDialog("aed",btn)
@@ -157,6 +160,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 
 
         view.findViewById<Button>(R.id.btn_finish).setOnClickListener {
+//            mapsCountViewModel.queryButtonTouchCount.valueがバグりがち
             Log.d(TAG,"Toast no bubunb で：${mapsCountViewModel.isRequestComplete.value} ==?? ${mapsCountViewModel.queryButtonTouchCount.value}")
             if (mapsCountViewModel.isRequestComplete.value==mapsCountViewModel.queryButtonTouchCount.value)
                 findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
@@ -257,8 +261,8 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                     getActivity()?.runOnUiThread {
                         query_iButton?.setImageResource(imageResourceId!!)
                         query_iButton?.setOnClickListener {
-                            mapsCountViewModel.queryButtonTouchCount.value=
-                                mapsCountViewModel.queryButtonTouchCount.value!! +1
+//                            mapsCountViewModel.queryButtonTouchCount.value=
+//                                mapsCountViewModel.queryButtonTouchCount.value!! +1
                             showImageDialog("aed", query_iButton!!)
                         }
                     }
@@ -281,8 +285,8 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                     getActivity()?.runOnUiThread {
                         query_iButton?.setImageResource(imageResourceId!!)
                         query_iButton?.setOnClickListener {
-                            mapsCountViewModel.queryButtonTouchCount.value=
-                                mapsCountViewModel.queryButtonTouchCount.value!! +1
+//                            mapsCountViewModel.queryButtonTouchCount.value=
+//                                mapsCountViewModel.queryButtonTouchCount.value!! +1
                             showImageDialog("crecore", query_iButton!!)
                         }
                     }
@@ -312,8 +316,8 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                     getActivity()?.runOnUiThread {
                         query_iButton?.setImageResource(imageResourceId!!)
                         query_iButton?.setOnClickListener {
-                            mapsCountViewModel.queryButtonTouchCount.value=
-                                mapsCountViewModel.queryButtonTouchCount.value!! +1
+//                            mapsCountViewModel.queryButtonTouchCount.value=
+//                                mapsCountViewModel.queryButtonTouchCount.value!! +1
                             showImageDialog("obj", query_iButton!!)
                         }
                     }
@@ -411,7 +415,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                     // 現在地を取得できた場合の処理
                     location?.let {
                         currentLatLng = LatLng(it.latitude, it.longitude)
-                        Log.d(TAG,"current location: ${currentLatLng}")
+//                        Log.d(TAG,"current location: ${currentLatLng}")
                         mMap.addMarker(MarkerOptions().position(currentLatLng!!).title("Current Location"))
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng!!, 15f))
 
@@ -583,7 +587,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                         if (location != null) {
                             currentLatLng = LatLng(location.latitude, location.longitude)
                         }
-                        Log.d(TAG,"currentLocation: $currentLatLng")
+//                        Log.d(TAG,"currentLocation: $currentLatLng")
                         currentMaker?.remove()
                         currentMaker = mMap.addMarker(MarkerOptions().position(currentLatLng!!).title("Current Location"))
 //                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng!!))

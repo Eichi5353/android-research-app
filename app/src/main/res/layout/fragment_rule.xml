@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".RuleFragment">
-
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,62 +13,75 @@
         android:textAlignment="center"
         android:padding="10dp"
         android:background="@color/pink"/>
-<!--    ルールごとに-->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="１.基本ルール"
-        android:textSize="25dp"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="目的地の画像が提示されます．
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="１.基本ルール"
+                android:textSize="25dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="目的地の画像が提示されます．
         \nそこまで移動して，表示された画像と全く同じように写真を撮ってください．
+        \n０から１００点の得点になります．
         \n目的地以外の画像も提示されます．\nその場所を見つけたら同様に撮影をしてください．
-\nたくさんうまくとると高得点がでます．\nランキング上位を目指して頑張ってください"
+        \n場所があっていると５０点になります．
+\nたくさん撮るとその分得点が上がります．\nランキング上位を目指して頑張ってください"
 
-        android:textSize="20dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="20dp"/>
+                android:textSize="20dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="２.注意点"
+                android:textSize="25dp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="他人に迷惑をかけるようなことはしない．\n走らない．
+\n同じ場所を撮影するのは１回だけにしてください"
+                android:textSize="20dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="20dp"/>
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="２.注意点"
-        android:textSize="25dp"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="他人に迷惑をかけるようなことはしない．\n走らない．"
-        android:textSize="20dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="３."
+                android:textSize="25dp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="あいうえお"
+                android:textSize="20dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginBottom="20dp"/>
+            <Button
+                android:id="@+id/btn_toTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="戻る"
+                android:textSize="25dp"
+                android:paddingHorizontal="10dp"
+                android:layout_gravity="center"/>
+        </LinearLayout>
 
+    </ScrollView>
+    <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="３."
-        android:textSize="25dp"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="あいうえお"
-        android:textSize="20dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="20dp"/>
-    <Button
-        android:id="@+id/btn_toTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="戻る"
-        android:textSize="25dp"
-        android:paddingHorizontal="10dp"
-        android:layout_gravity="center"/>
 
 
 </LinearLayout>

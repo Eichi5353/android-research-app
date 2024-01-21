@@ -83,6 +83,9 @@ class TitleFragment : Fragment() {
         view.findViewById<Button>(R.id.btn).setOnClickListener{
             findNavController().navigate(R.id.action_titleFragment_to_mapsTestFragment)
         }
+        view.findViewById<Button>(R.id.btn_game2).setOnClickListener{
+            findNavController().navigate(R.id.action_titleFragment_to_mapsFragment2)
+        }
         view.findViewById<Button>(R.id.btn_go_ranking).setOnClickListener{
             findNavController().navigate(R.id.action_titleFragment_to_rankingFragment)
         }

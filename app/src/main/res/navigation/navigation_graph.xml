@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_titleFragment_to_ruleFragment"
             app:destination="@id/ruleFragment" />
+        <action
+            android:id="@+id/action_titleFragment_to_mapsFragment2"
+            app:destination="@id/mapsFragment2" />
     </fragment>
 
     <fragment
@@ -147,6 +150,26 @@
         <action
             android:id="@+id/action_ruleFragment_to_titleFragment"
             app:destination="@id/titleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapsFragment2"
+        android:name="com.example.myprototype.MapsFragment2"
+        android:label="MapsFragment2" >
+        <action
+            android:id="@+id/action_mapsFragment2_to_takeImgToComapareFragment"
+            app:destination="@id/takeImgToComapareFragment" />
+        <action
+            android:id="@+id/action_mapsFragment2_to_titleFragment"
+            app:destination="@id/titleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/takeImgToComapareFragment"
+        android:name="com.example.myprototype.TakeImgToComapareFragment"
+        android:label="fragment_take_img_to_comapare"
+        tools:layout="@layout/fragment_take_img_to_comapare" >
+        <action
+            android:id="@+id/action_takeImgToComapareFragment_to_mapsFragment2"
+            app:destination="@id/mapsFragment2" />
     </fragment>
 
 

@@ -37,16 +37,16 @@
 
             <!--        buttonを問題画像に-->
             <!--        それをタッチしたら拡大して，撮影画面に行くボタン-->
-<!--            <ImageButton-->
-<!--                android:id="@+id/btn1"-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:layout_alignParentBottom="true"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:src="@drawable/aed"-->
-<!--                android:layout_margin="0dp"-->
-<!--                android:onClick="btn1_click"-->
-<!--                android:scaleType="fitCenter"/>-->
+            <!--            <ImageButton-->
+            <!--                android:id="@+id/btn1"-->
+            <!--                android:layout_width="100dp"-->
+            <!--                android:layout_height="100dp"-->
+            <!--                android:layout_alignParentBottom="true"-->
+            <!--                android:layout_centerHorizontal="true"-->
+            <!--                android:src="@drawable/aed"-->
+            <!--                android:layout_margin="0dp"-->
+            <!--                android:onClick="btn1_click"-->
+            <!--                android:scaleType="fitCenter"/>-->
             <ImageButton
                 android:id="@+id/btn2"
                 android:layout_width="100dp"
@@ -58,16 +58,16 @@
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/btn3"-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:layout_alignParentBottom="true"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:src="@drawable/crecore"-->
-<!--                android:layout_margin="5dp"-->
-<!--                android:onClick="btn2_click"-->
-<!--                android:scaleType="fitCenter"/>-->
+            <ImageButton
+                android:id="@+id/btn3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/crecore"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
 
             <ImageButton
                 android:id="@+id/btn4"
@@ -91,38 +91,38 @@
 <!--                android:onClick="btn2_click"-->
 <!--                android:scaleType="fitCenter"/>-->
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/btn6"-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:layout_alignParentBottom="true"-->
-<!--                android:layout_centerHorizontal="true"-->
-<!--                android:src="@drawable/obj"-->
-<!--                android:layout_margin="5dp"-->
-<!--                android:onClick="btn2_click"-->
-<!--                android:scaleType="fitCenter"/>-->
-
             <ImageButton
-                android:id="@+id/btn7"
+                android:id="@+id/btn6"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/stone"
+                android:src="@drawable/obj"
                 android:layout_margin="5dp"
                 android:onClick="btn2_click"
                 android:scaleType="fitCenter"/>
 
 <!--            <ImageButton-->
-<!--                android:id="@+id/btn8"-->
+<!--                android:id="@+id/btn7"-->
 <!--                android:layout_width="100dp"-->
 <!--                android:layout_height="100dp"-->
 <!--                android:layout_alignParentBottom="true"-->
 <!--                android:layout_centerHorizontal="true"-->
-<!--                android:src="@drawable/water"-->
+<!--                android:src="@drawable/stone"-->
 <!--                android:layout_margin="5dp"-->
 <!--                android:onClick="btn2_click"-->
 <!--                android:scaleType="fitCenter"/>-->
+
+            <ImageButton
+                android:id="@+id/btn8"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/water"
+                android:layout_margin="5dp"
+                android:onClick="btn2_click"
+                android:scaleType="fitCenter"/>
 
 <!--            <ImageButton-->
 <!--                android:id="@+id/btn9"-->
@@ -224,7 +224,7 @@
             android:layout_gravity="center_horizontal"
             android:textSize="20dp"
             android:textAlignment="center"
-            android:text="３つの目的地到達で終了\n経路を参考に移動するといいよ\n一番下の画像たちはボーナス得点問題\n場所を見つけたらその都度撮影して"
+            android:text="2つの目的地到達で終了\n経路を参考に移動するといいよ\n一番下の画像たちも撮影できます"
             />
     </LinearLayout>
 

@@ -197,7 +197,7 @@ class TakeImgFragment2 : Fragment() {
                         mapsCountViewModel.queryButtonTouchCount.value!! +1
                     Log.d(TAG,"queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
                 }else if (query_file == "aed"){
-                    mapsCountViewModel.isSecondPlaceComplete.value = true
+                    mapsCountViewModel.isFirstPlaceComplete.value = true
                     Log.d(TAG,"isSecond True")
                     mapsCountViewModel.queryButtonTouchCount.value=
                         mapsCountViewModel.queryButtonTouchCount.value!! +1
@@ -205,6 +205,11 @@ class TakeImgFragment2 : Fragment() {
 
                 }else if(query_file =="crecore"){
                     mapsCountViewModel.isThirdPlaceComplete.value =true
+                    mapsCountViewModel.queryButtonTouchCount.value=
+                        mapsCountViewModel.queryButtonTouchCount.value!! +1
+                    Log.d(TAG,"queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
+                }else if(query_file =="arrow"){
+                    mapsCountViewModel.isSecondPlaceComplete.value =true
                     mapsCountViewModel.queryButtonTouchCount.value=
                         mapsCountViewModel.queryButtonTouchCount.value!! +1
                     Log.d(TAG,"queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
@@ -238,7 +243,7 @@ class TakeImgFragment2 : Fragment() {
                     view?.findViewById<Button>(R.id.result_btn)?.setOnClickListener(){
                         //            coroutineで類似度計算処理　Httpリクエスト
                         // Coroutineを使用して非同期処理を開始
-                        if(query_file == "obj"||query_file == "aed"||query_file == "crecore") {
+                        if(query_file == "obj"||query_file == "aed"||query_file == "crecore"||query_file == "arrow") {
                             job = CoroutineScope(Dispatchers.Main).launch {
                                 // バックグラウンドで実行する処理（HTTPリクエストなど）
                                 sendRequest(

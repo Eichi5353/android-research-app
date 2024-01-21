@@ -125,10 +125,10 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
             val btn4 = view.findViewById<ImageButton>(R.id.btn4)
             showImageDialog("mama",btn4)
         }
-        view.findViewById<ImageButton>(R.id.btn5).setOnClickListener {
-            val btn5 = view.findViewById<ImageButton>(R.id.btn5)
-            showImageDialog("nitro",btn5)
-        }
+//        view.findViewById<ImageButton>(R.id.btn5).setOnClickListener {
+//            val btn5 = view.findViewById<ImageButton>(R.id.btn5)
+//            showImageDialog("nitro",btn5)
+//        }
 //        view.findViewById<ImageButton>(R.id.btn6).setOnClickListener {
 //            val btn6 = view.findViewById<ImageButton>(R.id.btn6)
 //            showImageDialog("obj",btn6)
@@ -137,22 +137,22 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
             val btn7 = view.findViewById<ImageButton>(R.id.btn7)
             showImageDialog("stone",btn7)
         }
-        view.findViewById<ImageButton>(R.id.btn8).setOnClickListener {
-            val btn8 = view.findViewById<ImageButton>(R.id.btn8)
-            showImageDialog("water",btn8)
-        }
-        view.findViewById<ImageButton>(R.id.btn9).setOnClickListener {
-            val btn9 = view.findViewById<ImageButton>(R.id.btn9)
-            showImageDialog("arrow",btn9)
-        }
+//        view.findViewById<ImageButton>(R.id.btn8).setOnClickListener {
+//            val btn8 = view.findViewById<ImageButton>(R.id.btn8)
+//            showImageDialog("water",btn8)
+//        }
+//        view.findViewById<ImageButton>(R.id.btn9).setOnClickListener {
+//            val btn9 = view.findViewById<ImageButton>(R.id.btn9)
+//            showImageDialog("arrow",btn9)
+//        }
         view.findViewById<ImageButton>(R.id.btn10).setOnClickListener {
             val btn10 = view.findViewById<ImageButton>(R.id.btn10)
             showImageDialog("door",btn10)
         }
-        view.findViewById<ImageButton>(R.id.btn11).setOnClickListener {
-            val btn11 = view.findViewById<ImageButton>(R.id.btn11)
-            showImageDialog("ichi",btn11)
-        }
+//        view.findViewById<ImageButton>(R.id.btn11).setOnClickListener {
+//            val btn11 = view.findViewById<ImageButton>(R.id.btn11)
+//            showImageDialog("ichi",btn11)
+//        }
         view.findViewById<ImageButton>(R.id.btn12).setOnClickListener {
             val btn12 = view.findViewById<ImageButton>(R.id.btn12)
             showImageDialog("phone",btn12)
@@ -254,9 +254,39 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 
 
                 if (mapsCountViewModel.isFirstPlaceComplete.value == true && mapsCountViewModel.isSecondPlaceComplete.value == false
-                    && mapsCountViewModel.isThirdPlaceComplete.value == false
                 ) {
                     // リソースIDを指定して画像を設定
+                    imageResourceId = R.drawable.arrow
+                    getActivity()?.runOnUiThread {
+                        query_iButton?.setImageResource(imageResourceId!!)
+                        query_iButton?.setOnClickListener {
+//                            mapsCountViewModel.queryButtonTouchCount.value=
+//                                mapsCountViewModel.queryButtonTouchCount.value!! +1
+                            showImageDialog("arrow", query_iButton!!)
+                        }
+                    }
+                    response = URL(
+                        "https://maps.googleapis.com/maps/api/directions/json?" +
+                                "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                "&destination=34.98098,135.96139" +//near arrow
+                                //                   crecore "34.97948,135.96404" +
+                                "&mode=walking" +
+                                //なくてよい？                                            Nitro                ８０前            アーク前
+                                "&waypoints=34.98091,135.96198|34.98011,135.96197" +
+//                                "34.98182,135.96356|34.98094,135.96348" +
+                                "&key=${APIKey}"
+                    )
+                        .readText()
+                    frag = 1
+                }else if (mapsCountViewModel.isFirstPlaceComplete.value == true && mapsCountViewModel.isSecondPlaceComplete.value == true) {
+                    imageResourceId = R.drawable.finish
+                    getActivity()?.runOnUiThread {
+                        query_iButton?.setImageResource(imageResourceId!!)
+                    }
+                    response = null
+                    frag = 2
+                } else {
                     imageResourceId = R.drawable.aed
                     getActivity()?.runOnUiThread {
                         query_iButton?.setImageResource(imageResourceId!!)
@@ -268,68 +298,14 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                     }
                     response = URL(
                         "https://maps.googleapis.com/maps/api/directions/json?" +
-                                "origin=34.98252,135.96468" +
+                                "origin=34.97948,135.96404" +
                                 //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
                                 "&destination=34.98125,135.96258" +//near aed
                                 //                   crecore "34.97948,135.96404" +
                                 "&mode=walking" +
                                 //なくてよい？                                            Nitro                ８０前            アーク前
-                                "&waypoints=34.98182,135.96356|34.98094,135.96348" +
-                                "&key=${APIKey}"
-                    )
-                        .readText()
-                    frag = 1
-                } else if (mapsCountViewModel.isFirstPlaceComplete.value == true && mapsCountViewModel.isSecondPlaceComplete.value == true
-                    && mapsCountViewModel.isThirdPlaceComplete.value == false) {
-                    imageResourceId = R.drawable.crecore
-                    getActivity()?.runOnUiThread {
-                        query_iButton?.setImageResource(imageResourceId!!)
-                        query_iButton?.setOnClickListener {
-//                            mapsCountViewModel.queryButtonTouchCount.value=
-//                                mapsCountViewModel.queryButtonTouchCount.value!! +1
-                            showImageDialog("crecore", query_iButton!!)
-                        }
-                    }
-                    response = URL(
-                        "https://maps.googleapis.com/maps/api/directions/json?" +
-                                "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +//34.98125,135.96258"+
-                                //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
-                                "&destination=34.97948,135.96404" +//crecore
-                                //                   crecore "34.97948,135.96404" +
-                                "&mode=walking" +
-                                //なくてよい？                                            Nitro                ８０前            アーク前
-                                "&waypoints=34.98090,135.96208|34.97979,135.96216|34.97863,135.96352" +
-                                "&key=${APIKey}"
-                    )
-                        .readText()
-                    frag = 2
-                }else if (mapsCountViewModel.isFirstPlaceComplete.value == true && mapsCountViewModel.isSecondPlaceComplete.value == true
-                    && mapsCountViewModel.isThirdPlaceComplete.value == true) {
-                    imageResourceId = R.drawable.finish
-                    getActivity()?.runOnUiThread {
-                        query_iButton?.setImageResource(imageResourceId!!)
-                    }
-                    response = null
-                    frag = 2
-                } else {
-                    imageResourceId = R.drawable.obj
-                    getActivity()?.runOnUiThread {
-                        query_iButton?.setImageResource(imageResourceId!!)
-                        query_iButton?.setOnClickListener {
-//                            mapsCountViewModel.queryButtonTouchCount.value=
-//                                mapsCountViewModel.queryButtonTouchCount.value!! +1
-                            showImageDialog("obj", query_iButton!!)
-                        }
-                    }
-                    response = URL(
-                        "https://maps.googleapis.com/maps/api/directions/json?" +
-                                "origin=34.97948,135.96404" +
-                                //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
-                                "&destination=34.98252,135.96468" +//obj
-                                //                   crecore "34.97948,135.96404" +
-                                "&mode=walking" +
-                                //なくてよい？                                            Nitro                ８０前            アーク前
-                                "&waypoints=34.98087,135.96370|34.98089,135.96474" +
+                                "&waypoints=34.98040,135.96367|34.98046,135.96470|34.98089,135.96474" +
+//
                                 //                    "34.97983,135.96478|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98046,135.96381|34.98090,135.96371|34.98134,135.96472|34.98255,135.96457|34.98181,135.96349|" +
                                 //AED
                                 //                    "34.98085,135.96305|34.98122,135.96253|34.98053,135.96241" +

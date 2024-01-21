@@ -1,0 +1,504 @@
+package com.example.myprototype
+
+import android.Manifest
+import android.app.Dialog
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.location.Location
+import android.os.Bundle
+import android.os.Looper
+import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.example.myprototype.data.MapMakerInfo
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.android.PolyUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.net.URL
+
+// TODO: Rename parameter arguments, choose names that match
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
+
+/**
+ * A simple [Fragment] subclass.
+ * Use the [MapsFragment2.newInstance] factory method to
+ * create an instance of this fragment.
+ */
+class MapsFragment2 : Fragment(),OnMapReadyCallback {
+    private lateinit var mapsCountViewModel: MapsCountViewModel
+    private lateinit var mMap: GoogleMap
+    //    private lateinit var mapView: MapView
+    private val markerList = mutableListOf<MapMakerInfo>()
+    val a = 0
+    //    val APIKey = "AIzaSyCprjoQjsq3IeA3cRmkjTsNl3ahzPbfpSA"
+    val APIKey = "AIzaSyCNx31A-f_VyABih0-OETfZ6BicvbJJgFY"
+    //    val response = null
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // 任意の値
+    val TAG = "MapsFragment"
+    var currentLatLng: LatLng? = null
+    //    今の経路の線
+    private var currentPolyline: Polyline? = null
+    private var currentMaker: Marker? = null
+
+    private var lastButtonClicked: ImageButton? = null
+    lateinit var queryBundle: Bundle
+
+    private var response: String? = null
+
+    var frag =0
+    var ismakeApiFrag = false
+
+    var imageResourceId: Int? = null
+    var query_iButton: ImageButton? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_maps2, container, false)
+        query_iButton = view?.findViewById(R.id.ibtn_query)
+        checkLocationPermission()
+        // MapViewを取得
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+//        mapView = view.findViewById(R.id.map)
+//        mapView.onCreate(savedInstanceState)
+//        mapView?.getMapAsync(callback)
+        mapFragment?.getMapAsync(this)
+
+        //ViewModel取得
+        activity?.run {
+            mapsCountViewModel = ViewModelProvider(this).get(MapsCountViewModel::class.java)
+        }
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG,"onCreated queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
+
+//        view.findViewById<ImageButton>(R.id.btn1).setOnClickListener {
+//            val btn = view.findViewById<ImageButton>(R.id.btn1)
+//            showImageDialog("aed",btn)
+//        }
+        view.findViewById<ImageButton>(R.id.btn2).setOnClickListener {
+            val btn2 = view.findViewById<ImageButton>(R.id.btn2)
+            showImageDialog("atm",btn2)
+        }
+        view.findViewById<ImageButton>(R.id.btn3).setOnClickListener {
+            val btn3 = view.findViewById<ImageButton>(R.id.btn3)
+            showImageDialog("crecore",btn3)
+        }
+        view.findViewById<ImageButton>(R.id.btn4).setOnClickListener {
+            val btn4 = view.findViewById<ImageButton>(R.id.btn4)
+            showImageDialog("mama",btn4)
+        }
+//        view.findViewById<ImageButton>(R.id.btn5).setOnClickListener {
+//            val btn5 = view.findViewById<ImageButton>(R.id.btn5)
+//            showImageDialog("nitro",btn5)
+//        }
+        view.findViewById<ImageButton>(R.id.btn6).setOnClickListener {
+            val btn6 = view.findViewById<ImageButton>(R.id.btn6)
+            showImageDialog("obj",btn6)
+        }
+//        view.findViewById<ImageButton>(R.id.btn7).setOnClickListener {
+//            val btn7 = view.findViewById<ImageButton>(R.id.btn7)
+//            showImageDialog("stone",btn7)
+//        }
+        view.findViewById<ImageButton>(R.id.btn8).setOnClickListener {
+            val btn8 = view.findViewById<ImageButton>(R.id.btn8)
+            showImageDialog("water",btn8)
+        }
+//        view.findViewById<ImageButton>(R.id.btn9).setOnClickListener {
+//            val btn9 = view.findViewById<ImageButton>(R.id.btn9)
+//            showImageDialog("arrow",btn9)
+//        }
+        view.findViewById<ImageButton>(R.id.btn10).setOnClickListener {
+            val btn10 = view.findViewById<ImageButton>(R.id.btn10)
+            showImageDialog("door",btn10)
+        }
+//        view.findViewById<ImageButton>(R.id.btn11).setOnClickListener {
+//            val btn11 = view.findViewById<ImageButton>(R.id.btn11)
+//            showImageDialog("ichi",btn11)
+//        }
+        view.findViewById<ImageButton>(R.id.btn12).setOnClickListener {
+            val btn12 = view.findViewById<ImageButton>(R.id.btn12)
+            showImageDialog("phone",btn12)
+        }
+    }
+    override fun onMapReady(map: GoogleMap) {
+        mMap = map
+
+        // マップの初期設定などを行う
+//        初期位置
+        val initialLatLng: LatLng = LatLng(34.97948,135.96404)
+        val zoomLevel = 21.0f
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLatLng, zoomLevel));
+        // 保存されたマーカーの位置情報を復元
+//        restoreMarkers()
+        startLocationUpdates()
+        // マップがクリックされたときのリスナーを設定
+//        mMap.setOnMapClickListener { latLng ->
+        // 新しい MapMarkerInfo インスタンスを作成
+//            val markerInfo = MapMakerInfo(
+//                id = UUID.randomUUID().toString(), // 一意なIDを生成
+//                title = "Test marker",
+//                snippet = "Marker Snippet",
+////                position = latLng
+//                position = LatLng(34.97948,135.96404)
+//            )
+//            // マーカーを地図に追加
+//            val marker = mMap.addMarker(
+//                MarkerOptions()
+//                    .position(markerInfo.position)
+//                    .title(markerInfo.title)
+//                    .snippet(markerInfo.snippet)
+//            )
+//            // マーカーを地図に追加
+//            addMarkerToMap(markerInfo)
+//
+//            // マーカーの情報を保存
+//            saveMarkers()
+//        }
+
+    }
+
+    private fun makeApiRequest() {
+        if (!ismakeApiFrag) {
+            ismakeApiFrag = true
+            GlobalScope.launch(Dispatchers.IO) {
+                // バックグラウンドで実行したい処理
+                //ここでもうおかしい
+                currentMaker?.remove()
+                //            Log.d(TAG, "current location(beforeURL): ${currentLatLng}")
+                Log.d(TAG, "isFirst: ${mapsCountViewModel.isFirstPlaceComplete.value}")
+                Log.d(TAG, "isSecond: ${mapsCountViewModel.isSecondPlaceComplete.value}")
+                Log.d(TAG, "isThird: ${mapsCountViewModel.isThirdPlaceComplete.value}")
+                Log.d(TAG, "frag: ${frag}")
+                Log.d(TAG, "cuurent Gps: ${currentLatLng}")
+
+
+//                二か所に変更，　問題場所も変更
+                if (mapsCountViewModel.isFirstPlaceComplete.value == true && mapsCountViewModel.isSecondPlaceComplete.value == false) {
+                    // リソースIDを指定して画像を設定
+                    imageResourceId = R.drawable.nitro
+                    getActivity()?.runOnUiThread {
+                        query_iButton?.setImageResource(imageResourceId!!)
+                        query_iButton?.setOnClickListener {
+//                            mapsCountViewModel.queryButtonTouchCount.value=
+//                                mapsCountViewModel.queryButtonTouchCount.value!! +1
+                            showImageDialog("nitro", query_iButton!!)
+                        }
+                    }
+                    response = URL(
+                        "https://maps.googleapis.com/maps/api/directions/json?" +
+                                "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                "&destination=34.98109,135.96494" +//near aed
+                                //                   crecore "34.97948,135.96404" +
+                                "&mode=walking" +
+                                //なくてよい？                                            Nitro                ８０前            アーク前
+                                "&waypoints=34.97981,135.96363|34.97984,135.96502|34.98044,135.96470|34.98052,135.96365" +
+                                "&key=${APIKey}"
+                    )
+                        .readText()
+                    frag = 1
+                }else if (mapsCountViewModel.isFirstPlaceComplete.value == true && mapsCountViewModel.isSecondPlaceComplete.value == true){
+                    imageResourceId = R.drawable.finish
+                    getActivity()?.runOnUiThread {
+                        query_iButton?.setImageResource(imageResourceId!!)
+                        query_iButton?.setOnClickListener {
+                            findNavController().navigate(R.id.action_mapsFragment2_to_titleFragment)
+                        }
+                    }
+                    response = null
+                    frag = 2
+                } else {
+                    imageResourceId = R.drawable.ichi
+                    getActivity()?.runOnUiThread {
+                        query_iButton?.setImageResource(imageResourceId!!)
+                        query_iButton?.setOnClickListener {
+//                            mapsCountViewModel.queryButtonTouchCount.value=
+//                                mapsCountViewModel.queryButtonTouchCount.value!! +1
+                            showImageDialog("ichi", query_iButton!!)
+                        }
+                    }
+                    response = URL(
+                        "https://maps.googleapis.com/maps/api/directions/json?" +
+                                "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                "&destination=34.97916,135.96357" +//near ichi
+                                //                   crecore "34.97948,135.96404" +
+                                "&mode=walking" +
+                                //なくてよい？                                            Nitro                ８０前            アーク前
+                                "&waypoints=34.97862,135.96251" +
+                                //                    "34.97983,135.96478|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98046,135.96381|34.98090,135.96371|34.98134,135.96472|34.98255,135.96457|34.98181,135.96349|" +
+                                //AED
+                                //                    "34.98085,135.96305|34.98122,135.96253|34.98053,135.96241" +
+                                //                    "34.98259,135.96450|34.98182,135.96345|34.98081,135.96292|34.98088,135.96204" +
+                                "&key=${APIKey}"
+                    )
+                        .readText()
+                }
+
+
+                //            Log.d(TAG,"response Json: ${response}")
+                withContext(Dispatchers.Main) {
+                    // UIの更新などを行う
+                    var points: String? = null
+                    if(response== null)
+                        currentPolyline = null
+                    else {
+                        val jsonResponse = JSONObject(response)
+                        //                Log.d(TAG,"response Json: ${jsonResponse}")
+                        val routes = jsonResponse.getJSONArray("routes")
+                        //                Log.d(TAG,"routes: ${routes}")
+
+                        if (routes.length() > 0) {
+                            val legs = routes.getJSONObject(0).getJSONArray("legs")
+                            if (legs.length() > 0) {
+                                val steps = legs.getJSONObject(0).getJSONArray("steps")
+                                // ここで取得した情報を使用する処理を行う
+                                val route = routes.getJSONObject(0) // 最初の経路を取得
+                                points =
+                                    route.getJSONObject("overview_polyline").getString("points")
+                                //                        Log.d(TAG, "points : ${points}")
+
+                            } else {
+                                Log.e(TAG, "error legs is empty")
+                                // エラー処理: "legs"が空の場合
+                            }
+                        } else {
+                            Log.e(TAG, "error routes is empty")
+
+                            // エラー処理: "routes"が空の場合
+                        }
+                        //                val route = routes.getJSONObject(0) // 最初の経路を取得
+                        //                val points = route.getJSONObject("overview_polyline").getString("points")
+
+                        // メインスレッドで実行すること
+                        //                経路の色設定
+                        Log.d(TAG, "points: ${points}")
+                        if (points != null) {
+                            val polyline = PolylineOptions()
+                                .addAll(PolyUtil.decode(points))
+                                .color(Color.RED)
+                                .width(10f)
+
+                            currentPolyline = mMap.addPolyline(polyline)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkLocationPermission() {
+        // パーミッションがすでに許可されているか確認
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // パーミッションが許可されていない場合、ユーザーにリクエスト
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            // パーミッションがすでに許可されている場合、GPSを使用する処理を続行
+            // ここにGPSを使用するための処理を追加
+            val fusedLocationClient: FusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(requireContext())
+
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    // 現在地を取得できた場合の処理
+                    location?.let {
+                        currentLatLng = LatLng(it.latitude, it.longitude)
+//                        Log.d(TAG,"current location: ${currentLatLng}")
+                        mMap.addMarker(MarkerOptions().position(currentLatLng!!).title("Current Location"))
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng!!, 15f))
+
+                        makeApiRequest()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    // 現在地の取得に失敗した場合の処理
+                    Log.e("Location", "Error getting location", exception)
+                }
+
+        }
+    }
+
+    // ユーザーのパーミッションリクエストの結果を処理
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d(TAG, "permission request granted")
+
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                // パーミッションリクエストの結果を確認
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // パーミッションが許可された場合、GPSを使用する処理を続行
+                    // ここにGPSを使用するための処理を追加
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        mMap.setMyLocationEnabled(true);
+                    } else {
+                        // パーミッションが拒否された場合、ユーザーにメッセージを表示するなどの処理を追加
+                    }
+                }
+            }
+        }
+    }
+    private fun showImageDialog(imageFileName: String, button: ImageButton) {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.dialog_image)
+
+        val dialogImageView: ImageView = dialog.findViewById(R.id.dialogImageView)
+        // Glideを使用してAssetsから画像を読み込んでImageViewに表示
+        Glide.with(requireContext())
+            .load("file:///android_asset/BKC/$imageFileName.jpg")
+            .into(dialogImageView)
+        dialog.show()
+        dialog.findViewById<Button>(R.id.btn_openCamera).setOnClickListener {
+            Log.d(TAG,"dialog Button press")
+            Log.d(TAG,"map visit Count(before): ${mapsCountViewModel.visitCount.value}")
+            mapsCountViewModel.incrementVisitCount()
+            Log.d(TAG,"map visit Count(after): ${mapsCountViewModel.visitCount.value}")
+            queryBundle = Bundle()
+            queryBundle.putString("query_name",imageFileName)
+//            この画面を消す
+            dialog.dismiss()
+//            押したボタンを消すとか
+            // 今回クリックされたボタンを記録
+//            lastButtonClicked = button
+//            // 押されたボタン非表示にする
+//            lastButtonClicked?.visibility = View.GONE
+
+//            ！注意　この画面には戻れません　写真を覚えて！
+            showCustomDialog()
+
+
+        }
+
+    }
+    private fun showCustomDialog() {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.to_takefragment_dialog,null)
+        val okButton = dialogView.findViewById<Button>(R.id.okButton)
+
+        // ダイアログビルダーを作成
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+
+        // ダイアログを表示
+        val dialog = builder.create()
+        dialog.show()
+
+        // OKボタンのクリックイベントを設定
+        okButton.setOnClickListener {
+            // ダイアログを閉じる
+            dialog.dismiss()
+            //            撮影画面へ
+            findNavController().navigate(R.id.action_mapsFragment2_to_takeImgToComapareFragment,queryBundle)
+        }
+    }
+
+    //    位置情報を更新するためのメソッド
+    private fun startLocationUpdates() {
+        // パーミッションがすでに許可されているか確認
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // パーミッションが許可されていない場合、ユーザーにリクエスト
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            // パーミッションがすでに許可されている場合、GPSを使用する処理を続行
+            // ここにGPSを使用するための処理を追加
+            val fusedLocationClient: FusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(requireContext())
+
+            fusedLocationClient.requestLocationUpdates(
+                getLocationRequest(),
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        super.onLocationResult(locationResult)
+                        // 位置情報が更新されたときの処理
+                        val location = locationResult.lastLocation
+                        if (location != null) {
+                            currentLatLng = LatLng(location.latitude, location.longitude)
+                        }
+//                        Log.d(TAG,"currentLocation: $currentLatLng")
+                        currentMaker?.remove()
+                        currentMaker = mMap.addMarker(MarkerOptions().position(currentLatLng!!).title("Current Location"))
+//                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLatLng!!))
+                        makeApiRequest()  // 位置情報が更新されるたびに経路を再取得
+                    }
+                },
+                Looper.getMainLooper()
+            )
+                .addOnFailureListener { exception ->
+                    // 現在地の取得に失敗した場合の処理
+                    Log.e("Location", "Error getting location", exception)
+                }
+        }
+    }
+
+
+    private fun getLocationRequest(): LocationRequest {
+        return LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(1000)  // 1000ミリ秒ごとに更新
+    }
+
+}

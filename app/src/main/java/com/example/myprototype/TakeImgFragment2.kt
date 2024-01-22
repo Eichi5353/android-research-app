@@ -64,6 +64,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
+import java.io.FileNotFoundException
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.pow
@@ -154,6 +155,9 @@ class TakeImgFragment2 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG,"onViewCreated queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
+        view.findViewById<Button>(R.id.btn_again).setOnClickListener {
+            CameraStrat(view)
+        }
 
 
     }
@@ -167,7 +171,7 @@ class TakeImgFragment2 : Fragment() {
 
 //            撮影した場所のGPSを取得
             startLocationUpdates()
-            Log.d(TAG,"take_gps : $take_gps")
+            Log.d(TAG, "take_gps : $take_gps")
 
 
 
@@ -179,143 +183,175 @@ class TakeImgFragment2 : Fragment() {
             //imageUriをResultFragmentに送る．
             //撮影画像
 //            たまにエラーが起こる　何かと競合している？？？ほかの画像ファイルやGPS取得
-            if (_imageUri != null){
-                val stream: InputStream? = requireContext().contentResolver.openInputStream(_imageUri!!)
-                bitmap = null
-                ivCamera?.setImageBitmap(null)
-                bitmap = BitmapFactory.decodeStream(BufferedInputStream(stream))
-                Log.d(TAG, "Bitmap: ${bitmap}")
-                Log.d(TAG, "_imageUri: ${_imageUri}")
+            var stream: InputStream? =null
+            if (_imageUri != null) {
+                try {
+                    stream =
+                        requireContext().contentResolver.openInputStream(_imageUri!!)
+                    if (stream != null) {
+                        bitmap = BitmapFactory.decodeStream(stream)
+                        ivCamera?.setImageBitmap(bitmap)
+                        Log.d(TAG, "Bitmap: ${bitmap}")
+                        Log.d(TAG, "_imageUri: ${_imageUri}")
+                        val query_file: String? = arguments?.getString("query_name")
+                        Log.d(TAG, "query_fileName : $query_file")
+                        if (query_file == "obj") {
+                            mapsCountViewModel.isFirstPlaceComplete.value = true
+                            Log.d(TAG, "isFirst True")
+                            mapsCountViewModel.queryButtonTouchCount.value =
+                                mapsCountViewModel.queryButtonTouchCount.value!! + 1
+                            Log.d(
+                                TAG,
+                                "queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}"
+                            )
+                        } else if (query_file == "aed") {
+                            mapsCountViewModel.isFirstPlaceComplete.value = true
+                            Log.d(TAG, "isSecond True")
+                            mapsCountViewModel.queryButtonTouchCount.value =
+                                mapsCountViewModel.queryButtonTouchCount.value!! + 1
+                            Log.d(
+                                TAG,
+                                "queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}"
+                            )
 
-                ivCamera?.setImageBitmap(bitmap)
+                        } else if (query_file == "crecore") {
+                            mapsCountViewModel.isThirdPlaceComplete.value = true
+                            mapsCountViewModel.queryButtonTouchCount.value =
+                                mapsCountViewModel.queryButtonTouchCount.value!! + 1
+                            Log.d(
+                                TAG,
+                                "queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}"
+                            )
+                        } else if (query_file == "arrow") {
+                            mapsCountViewModel.isSecondPlaceComplete.value = true
+                            mapsCountViewModel.queryButtonTouchCount.value =
+                                mapsCountViewModel.queryButtonTouchCount.value!! + 1
+                            Log.d(
+                                TAG,
+                                "queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}"
+                            )
 
-                val query_file:String? = arguments?.getString("query_name")
-                Log.d(TAG,"query_fileName : $query_file")
-                if(query_file == "obj"){
-                    mapsCountViewModel.isFirstPlaceComplete.value = true
-                    Log.d(TAG,"isFirst True")
-                    mapsCountViewModel.queryButtonTouchCount.value=
-                        mapsCountViewModel.queryButtonTouchCount.value!! +1
-                    Log.d(TAG,"queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
-                }else if (query_file == "aed"){
-                    mapsCountViewModel.isFirstPlaceComplete.value = true
-                    Log.d(TAG,"isSecond True")
-                    mapsCountViewModel.queryButtonTouchCount.value=
-                        mapsCountViewModel.queryButtonTouchCount.value!! +1
-                    Log.d(TAG,"queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
-
-                }else if(query_file =="crecore"){
-                    mapsCountViewModel.isThirdPlaceComplete.value =true
-                    mapsCountViewModel.queryButtonTouchCount.value=
-                        mapsCountViewModel.queryButtonTouchCount.value!! +1
-                    Log.d(TAG,"queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
-                }else if(query_file =="arrow"){
-                    mapsCountViewModel.isSecondPlaceComplete.value =true
-                    mapsCountViewModel.queryButtonTouchCount.value=
-                        mapsCountViewModel.queryButtonTouchCount.value!! +1
-                    Log.d(TAG,"queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
-
-                }
-
-//問題画像の位置情報をjsonファイルから取得
-                val assetManager = context!!.assets
-                val jsonInputStream = assetManager.open("BKC_data/$query_file.json")
-                val jsonString = jsonInputStream.bufferedReader().use { it.readText() }
-
-// JSON データを解析して利用
-                val jsonObject = JSONObject(jsonString)
-                val locationObject = jsonObject.getJSONObject("location")
-                Log.d(TAG, "location from json: ${locationObject}")
-                query_gps = LatLng(locationObject.getDouble("latitude"),locationObject.getDouble("longitude"))
-                Log.d(TAG, "query_gps: ${query_gps}")
-
-
-//        計算する形に変換する　bitmapー＞Base64
-                query_bitmap = getBitmapFromAsset(requireContext(), query_file!!)
-                Log.d(TAG,"query bitmap : ${query_bitmap}")
-                val string_query = getStringImage(query_bitmap)
-
-
-                val string_taking = getStringImage(bitmap)
-//            Log.d(TAG,"string_query: ${string_query}")
-//            Log.d(TAG,"string_taking: ${string_taking}")
-
-                if (string_query != null && string_taking != null) {
-                    view?.findViewById<Button>(R.id.result_btn)?.setOnClickListener(){
-                        //            coroutineで類似度計算処理　Httpリクエスト
-                        // Coroutineを使用して非同期処理を開始
-                        if(query_file == "obj"||query_file == "aed"||query_file == "crecore"||query_file == "arrow") {
-                            job = CoroutineScope(Dispatchers.Main).launch {
-                                // バックグラウンドで実行する処理（HTTPリクエストなど）
-                                sendRequest(
-                                    POST,
-                                    "/calculate-siamese",
-                                    "img1",
-                                    string_query,
-                                    "img2",
-                                    string_taking,
-                                    "fName",
-                                    query_file
-                                )
-                            }
-                        }else{
-                            val distance = calculateDistance(take_gps!!.latitude,take_gps!!.longitude,query_gps!!.latitude,
-                                query_gps!!.longitude)
-                            Log.d(TAG,"query and taking gps distance: $distance km")
-                            Log.d(TAG, "add to queryList: ${query_bitmap}")
-                            mapsCountViewModel.queryList.add(query_bitmap!!)
-                            Log.d(TAG, "mapscount.query: ${mapsCountViewModel.queryList}")
-                            mapsCountViewModel.takingList.add(bitmap!!)
-                            Log.d(TAG, "add to takingList: ${bitmap}")
-                            Log.d(TAG, "mapscount.taking: ${mapsCountViewModel.takingList}")
-                            if(distance<=0.05) {
-                                val onGPS: Boolean = true
-                                val result = -1
-                                mapsCountViewModel.resultList.add(result.toString())
-                                val subRef = db.collection("users").document(displayName)
-                                    .collection("Places")
-                                //.update(point_data as Map<String, String>)
-                                //.addOnSuccessListener {
-                                val point_data = hashMapOf(
-                                    "point" to result
-                                )
-                                subRef.document(query_file!!)
-                                    .set(point_data)
-                                    .addOnSuccessListener {
-                                        Log.d(TAG, "サブコレクションに格納できた: ${displayName}:${responseData}")
-                                    }
-                                    .addOnFailureListener{ e ->
-                                        Log.w(TAG, "Error adding document", e)
-                                    }
-                            }else{
-                                val result = -50
-                                mapsCountViewModel.resultList.add(result.toString())
-                                val subRef = db.collection("users").document(displayName)
-                                    .collection("Places")
-                                //.update(point_data as Map<String, String>)
-                                //.addOnSuccessListener {
-                                val point_data = hashMapOf(
-                                    "point" to result
-                                )
-                                subRef.document(query_file!!)
-                                    .set(point_data)
-                                    .addOnSuccessListener {
-                                        Log.d(TAG, "サブコレクションに格納できた: ${displayName}:${responseData}")
-                                    }
-                                    .addOnFailureListener{ e ->
-                                        Log.w(TAG, "Error adding document", e)
-                                    }
-                            }
                         }
-                        findNavController().navigate(R.id.action_takeImgFragment2_to_mapsTestFragment)
+
+                        //問題画像の位置情報をjsonファイルから取得
+                        val assetManager = context!!.assets
+                        val jsonInputStream = assetManager.open("BKC_data/$query_file.json")
+                        val jsonString = jsonInputStream.bufferedReader().use { it.readText() }
+
+                        // JSON データを解析して利用
+                        val jsonObject = JSONObject(jsonString)
+                        val locationObject = jsonObject.getJSONObject("location")
+                        Log.d(TAG, "location from json: ${locationObject}")
+                        query_gps = LatLng(
+                            locationObject.getDouble("latitude"),
+                            locationObject.getDouble("longitude")
+                        )
+                        Log.d(TAG, "query_gps: ${query_gps}")
+
+
+                        //        計算する形に変換する　bitmapー＞Base64
+                        query_bitmap = getBitmapFromAsset(requireContext(), query_file!!)
+                        Log.d(TAG, "query bitmap : ${query_bitmap}")
+                        val string_query = getStringImage(query_bitmap)
+
+
+                        val string_taking = getStringImage(bitmap)
+                        //            Log.d(TAG,"string_query: ${string_query}")
+                        //            Log.d(TAG,"string_taking: ${string_taking}")
+
+                        if (string_query != null && string_taking != null) {
+                            view?.findViewById<Button>(R.id.result_btn)?.setOnClickListener() {
+                                //            coroutineで類似度計算処理　Httpリクエスト
+                                // Coroutineを使用して非同期処理を開始
+                                if (query_file == "obj" || query_file == "aed" || query_file == "crecore" || query_file == "arrow") {
+                                    job = CoroutineScope(Dispatchers.Main).launch {
+                                        // バックグラウンドで実行する処理（HTTPリクエストなど）
+                                        sendRequest(
+                                            POST,
+                                            "/calculate-siamese",
+                                            "img1",
+                                            string_query,
+                                            "img2",
+                                            string_taking,
+                                            "fName",
+                                            query_file
+                                        )
+                                    }
+                                } else {
+                                    val distance = calculateDistance(
+                                        take_gps!!.latitude, take_gps!!.longitude, query_gps!!.latitude,
+                                        query_gps!!.longitude
+                                    )
+                                    Log.d(TAG, "query and taking gps distance: $distance km")
+                                    Log.d(TAG, "add to queryList: ${query_bitmap}")
+                                    mapsCountViewModel.queryList.add(query_bitmap!!)
+                                    Log.d(TAG, "mapscount.query: ${mapsCountViewModel.queryList}")
+                                    mapsCountViewModel.takingList.add(bitmap!!)
+                                    Log.d(TAG, "add to takingList: ${bitmap}")
+                                    Log.d(TAG, "mapscount.taking: ${mapsCountViewModel.takingList}")
+                                    if (distance <= 0.05) {
+                                        val onGPS: Boolean = true
+                                        val result = -1
+                                        mapsCountViewModel.resultList.add(result.toString())
+                                        val subRef = db.collection("users").document(displayName)
+                                            .collection("Places")
+                                        //.update(point_data as Map<String, String>)
+                                        //.addOnSuccessListener {
+                                        val point_data = hashMapOf(
+                                            "point" to result
+                                        )
+                                        subRef.document(query_file!!)
+                                            .set(point_data)
+                                            .addOnSuccessListener {
+                                                Log.d(
+                                                    TAG,
+                                                    "サブコレクションに格納できた: ${displayName}:${responseData}"
+                                                )
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.w(TAG, "Error adding document", e)
+                                            }
+                                    } else {
+                                        val result = -50
+                                        mapsCountViewModel.resultList.add(result.toString())
+                                        val subRef = db.collection("users").document(displayName)
+                                            .collection("Places")
+                                        //.update(point_data as Map<String, String>)
+                                        //.addOnSuccessListener {
+                                        val point_data = hashMapOf(
+                                            "point" to result
+                                        )
+                                        subRef.document(query_file!!)
+                                            .set(point_data)
+                                            .addOnSuccessListener {
+                                                Log.d(
+                                                    TAG,
+                                                    "サブコレクションに格納できた: ${displayName}:${responseData}"
+                                                )
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.w(TAG, "Error adding document", e)
+                                            }
+                                    }
+                                }
+                                findNavController().navigate(R.id.action_takeImgFragment2_to_mapsTestFragment)
+                            }
+                        } else {
+                            Log.d(TAG, "query bitmap is null")
+                        }
+                    } else {
+                        Log.e(TAG, "InputStream is null for $_imageUri")
                     }
-                } else {
-                    Log.d(TAG,"query bitmap is null")
+                } catch (e: FileNotFoundException) {
+                    Log.e(TAG, "FileNotFoundException: ${e.message}")
+                } catch (e: Exception) {
+                    Log.e(TAG, "Exception while decoding image: ${e.message}")
                 }
-            }else{
-                Log.e(TAG, "Failed to open InputStream for $_imageUri \ncamera again")
-                CameraStrat(view!!)
-            }
+
+                }else{
+                    Log.e(TAG, "Failed to open InputStream for $_imageUri \ncamera again")
+                    CameraStrat(view!!)
+                }
 
         } else {
             Log.e(TAG, "Failed to request code or result code, bitmap(${bitmap}) is null")

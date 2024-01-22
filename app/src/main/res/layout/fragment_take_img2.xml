@@ -23,5 +23,24 @@
         android:backgroundTint="@android:color/holo_red_dark"
         />
 
+    <Button
+        android:id="@+id/btn_again"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="もう一度撮る"
+        android:textSize="20dp"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:layout_marginTop="30dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="↑もし写真が出てこない場合は\nボタンを押してもう一度撮影して"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:textAlignment="center"/>
+
 
 </LinearLayout>

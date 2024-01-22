@@ -67,6 +67,7 @@ import org.json.JSONObject
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.system.measureTimeMillis
@@ -426,7 +427,7 @@ class TakeImgFragment2 : Fragment() {
                     if(distance<=0.05 && responseData.toInt()>1){
                         val onGPS:Boolean = true
                         Log.d(TAG,"GPS is OK  on the field")
-                        responseData = (responseData.toInt()/2+50).toString()
+                        responseData = (responseData.toInt()*0.8+20).roundToInt().toString()
                         Log.d(TAG,"GPS true responseData: $responseData")
                         val point_data = hashMapOf(
                             "point" to responseData

@@ -141,10 +141,10 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
             val btn7 = view.findViewById<ImageButton>(R.id.btn7)
             showImageDialog("stone",btn7)
         }
-//        view.findViewById<ImageButton>(R.id.btn8).setOnClickListener {
-//            val btn8 = view.findViewById<ImageButton>(R.id.btn8)
-//            showImageDialog("water",btn8)
-//        }
+        view.findViewById<ImageButton>(R.id.btn8).setOnClickListener {
+            val btn8 = view.findViewById<ImageButton>(R.id.btn8)
+            showImageDialog("water",btn8)
+        }
 //        view.findViewById<ImageButton>(R.id.btn9).setOnClickListener {
 //            val btn9 = view.findViewById<ImageButton>(R.id.btn9)
 //            showImageDialog("arrow",btn9)

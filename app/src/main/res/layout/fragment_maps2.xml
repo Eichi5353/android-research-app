@@ -135,16 +135,16 @@
 <!--                android:onClick="btn2_click"-->
 <!--                android:scaleType="fitCenter"/>-->
 
-            <ImageButton
-                android:id="@+id/btn10"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/door"
-                android:layout_margin="5dp"
-                android:onClick="btn2_click"
-                android:scaleType="fitCenter"/>
+<!--            <ImageButton-->
+<!--                android:id="@+id/btn10"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="100dp"-->
+<!--                android:layout_alignParentBottom="true"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:src="@drawable/door"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:onClick="btn2_click"-->
+<!--                android:scaleType="fitCenter"/>-->
 
 <!--            <ImageButton-->
 <!--                android:id="@+id/btn11"-->
@@ -224,7 +224,7 @@
             android:layout_gravity="center_horizontal"
             android:textSize="20dp"
             android:textAlignment="center"
-            android:text="2つの目的地到達で終了\n経路を参考に移動するといいよ\n一番下の画像たちも撮影できます"
+            android:text="2つの目的地到達で終了\n赤色の線が経路\n一番下の画像たちも撮影できます"
             />
     </LinearLayout>
 

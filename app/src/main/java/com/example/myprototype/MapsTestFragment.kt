@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -79,6 +81,8 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
 
     var imageResourceId: Int? = null
     var query_iButton: ImageButton? = null
+
+    private lateinit var tripleTapDetector: GestureDetector
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -273,7 +277,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                                 //                   crecore "34.97948,135.96404" +
                                 "&mode=walking" +
                                 //なくてよい？                                            Nitro                ８０前            アーク前
-                                "&waypoints=34.98091,135.96198|34.98011,135.96197" +
+                                "&waypoints=34.98123,135.96262|34.98091,135.96198|34.98011,135.96197" +
 //                                "34.98182,135.96356|34.98094,135.96348" +
                                 "&key=${APIKey}"
                     )
@@ -283,6 +287,15 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                     imageResourceId = R.drawable.finish
                     getActivity()?.runOnUiThread {
                         query_iButton?.setImageResource(imageResourceId!!)
+                        var finish_frag = 0
+                        query_iButton?.setOnClickListener {
+                            if (finish_frag ==3){
+                                findNavController().navigate(R.id.action_mapsTestFragment_to_resultAllFragment)
+                            }else if(finish_frag <3){
+                                finish_frag += 1
+                                Log.d(TAG,"finish_frag:$finish_frag")
+                            }
+                        }
                     }
                     response = null
                     frag = 2

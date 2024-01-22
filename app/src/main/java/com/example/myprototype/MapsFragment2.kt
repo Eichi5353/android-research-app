@@ -105,6 +105,9 @@ class MapsFragment2 : Fragment(),OnMapReadyCallback {
         activity?.run {
             mapsCountViewModel = ViewModelProvider(this).get(MapsCountViewModel::class.java)
         }
+        view.findViewById<Button>(R.id.btn_finish).setOnClickListener {
+            findNavController().navigate(R.id.action_mapsFragment2_to_resultAllFragment2)
+        }
         return view
     }
 
@@ -148,10 +151,10 @@ class MapsFragment2 : Fragment(),OnMapReadyCallback {
 //            val btn9 = view.findViewById<ImageButton>(R.id.btn9)
 //            showImageDialog("arrow",btn9)
 //        }
-        view.findViewById<ImageButton>(R.id.btn10).setOnClickListener {
-            val btn10 = view.findViewById<ImageButton>(R.id.btn10)
-            showImageDialog("door",btn10)
-        }
+//        view.findViewById<ImageButton>(R.id.btn10).setOnClickListener {
+//            val btn10 = view.findViewById<ImageButton>(R.id.btn10)
+//            showImageDialog("door",btn10)
+//        }
 //        view.findViewById<ImageButton>(R.id.btn11).setOnClickListener {
 //            val btn11 = view.findViewById<ImageButton>(R.id.btn11)
 //            showImageDialog("ichi",btn11)
@@ -407,9 +410,9 @@ class MapsFragment2 : Fragment(),OnMapReadyCallback {
         dialog.show()
         dialog.findViewById<Button>(R.id.btn_openCamera).setOnClickListener {
             Log.d(TAG,"dialog Button press")
-            Log.d(TAG,"map visit Count(before): ${mapsCountViewModel.visitCount.value}")
-            mapsCountViewModel.incrementVisitCount()
-            Log.d(TAG,"map visit Count(after): ${mapsCountViewModel.visitCount.value}")
+            Log.d(TAG,"map visit Count(before): ${mapsCountViewModel.visitCount2.value}")
+            mapsCountViewModel.incrementVisitCount2()
+            Log.d(TAG,"map visit Count(after): ${mapsCountViewModel.visitCount2.value}")
             queryBundle = Bundle()
             queryBundle.putString("query_name",imageFileName)
 //            この画面を消す

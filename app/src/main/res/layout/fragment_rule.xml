@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="１.基本ルール"
+                android:text="１.ゲーム①　基本ルール"
                 android:textSize="25dp"/>
             <TextView
                 android:layout_width="match_parent"
@@ -32,9 +32,8 @@
                 android:text="目的地の画像が提示されます．
         \nそこまで移動して，表示された画像と全く同じように写真を撮ってください．
         \n０から１００点の得点になります．
-        \n目的地以外の画像も提示されます．\nその場所を見つけたら同様に撮影をしてください．
-        \n場所があっていると５０点になります．
-\nたくさん撮るとその分得点が上がります．\nランキング上位を目指して頑張ってください"
+        \n\n目的地以外の画像も提示されます．\nその場所を同様に撮影をして，場所があっていると５０点になります．
+\n\n目的地への到達以外は自由です．\nランキング上位を目指して頑張ってください"
 
                 android:textSize="20dp"
                 android:layout_marginStart="25dp"
@@ -56,19 +55,19 @@
                 android:layout_marginBottom="20dp"/>
 
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="３."
-                android:textSize="25dp"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="あいうえお"
-                android:textSize="20dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginBottom="20dp"/>
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="３."-->
+<!--                android:textSize="25dp"-->
+<!--                />-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="あいうえお"-->
+<!--                android:textSize="20dp"-->
+<!--                android:layout_marginStart="25dp"-->
+<!--                android:layout_marginBottom="20dp"/>-->
             <Button
                 android:id="@+id/btn_toTitle"
                 android:layout_width="wrap_content"
@@ -76,7 +75,8 @@
                 android:text="戻る"
                 android:textSize="25dp"
                 android:paddingHorizontal="10dp"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:layout_marginBottom="50dp"/>
         </LinearLayout>
 
     </ScrollView>

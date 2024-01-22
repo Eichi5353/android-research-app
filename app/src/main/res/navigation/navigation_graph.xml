@@ -161,6 +161,9 @@
         <action
             android:id="@+id/action_mapsFragment2_to_titleFragment"
             app:destination="@id/titleFragment" />
+        <action
+            android:id="@+id/action_mapsFragment2_to_resultAllFragment2"
+            app:destination="@id/resultAllFragment2" />
     </fragment>
     <fragment
         android:id="@+id/takeImgToComapareFragment"
@@ -170,6 +173,14 @@
         <action
             android:id="@+id/action_takeImgToComapareFragment_to_mapsFragment2"
             app:destination="@id/mapsFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultAllFragment2"
+        android:name="com.example.myprototype.ResultAllFragment2"
+        android:label="ResultAllFragment2" >
+        <action
+            android:id="@+id/action_resultAllFragment2_to_titleFragment"
+            app:destination="@id/titleFragment" />
     </fragment>
 
 

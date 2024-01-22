@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="17dp"
+        android:text="次からは，撮影した結果の\n得点は計算されず，\n場所が正確であるかだけを判断し，\n
+        フィードバックします．\nランキング画面も表示されません．\n\n後は先ほどと同様です．\n目的地を目指してください"
+        android:textAlignment="center"
+        android:textColor="@color/black"/>
+
+    <Button
+        android:id="@+id/btn_goGame2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ゲームスタート"
+        android:textSize="20dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+
+</LinearLayout>

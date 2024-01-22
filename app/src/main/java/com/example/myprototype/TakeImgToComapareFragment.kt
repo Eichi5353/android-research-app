@@ -225,18 +225,22 @@ class TakeImgToComapareFragment : Fragment() {
                     )
                     Log.d(TAG, "query and taking gps distance: $distance km")
                     Log.d(TAG, "add to queryList: ${query_bitmap}")
-                    mapsCountViewModel.queryList.add(query_bitmap!!)
+                    mapsCountViewModel.queryList2.add(query_bitmap!!)
                     Log.d(TAG, "mapscount.query: ${mapsCountViewModel.queryList}")
-                    mapsCountViewModel.takingList.add(bitmap!!)
+                    mapsCountViewModel.takingList2.add(bitmap!!)
                     Log.d(TAG, "add to takingList: ${bitmap}")
                     Log.d(TAG, "mapscount.taking: ${mapsCountViewModel.takingList}")
                     scoretxt = view?.findViewById<TextView>(R.id.txt_score)
                     if (distance <= 0.05) {
                         val onGPS: Boolean = true
                         scoretxt?.setText("OK!")
+                        val response = 1
+                        mapsCountViewModel.resultList2.add(response.toString())
                     } else {
                         Log.d(TAG, "GPS no")
                         scoretxt?.setText("だめ！違う")
+                        val response = -1
+                        mapsCountViewModel.resultList2.add(response.toString())
                     }
                 } else {
                     Log.e(TAG, "Failed to open InputStream for $_imageUri \ncamera again")

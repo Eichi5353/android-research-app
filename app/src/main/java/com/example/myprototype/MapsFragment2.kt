@@ -230,7 +230,7 @@ class MapsFragment2 : Fragment(),OnMapReadyCallback {
                     }
                     response = URL(
                         "https://maps.googleapis.com/maps/api/directions/json?" +
-                                "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                "origin=34.97866,135.96251 "+
                                 //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
                                 "&destination=34.98109,135.96494" +//near aed
                                 //                   crecore "34.97948,135.96404" +
@@ -263,13 +263,15 @@ class MapsFragment2 : Fragment(),OnMapReadyCallback {
                     }
                     response = URL(
                         "https://maps.googleapis.com/maps/api/directions/json?" +
-                                "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+                                "origin=34.98085,135.96147" +
+//                                "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
+
                                 //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
-                                "&destination=34.97916,135.96357" +//near ichi
+                                "&destination=34.97853,135.96258" +//near ichi
                                 //                   crecore "34.97948,135.96404" +
                                 "&mode=walking" +
                                 //なくてよい？                                            Nitro                ８０前            アーク前
-                                "&waypoints=34.97862,135.96251" +
+                                "&waypoints=" +
                                 //                    "34.97983,135.96478|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98046,135.96381|34.98090,135.96371|34.98134,135.96472|34.98255,135.96457|34.98181,135.96349|" +
                                 //AED
                                 //                    "34.98085,135.96305|34.98122,135.96253|34.98053,135.96241" +

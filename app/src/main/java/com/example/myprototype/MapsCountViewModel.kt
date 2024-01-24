@@ -57,6 +57,10 @@ class MapsCountViewModel: ViewModel() {
         // LiveDataの値を更新
         visitCount.value = visitCount.value?.plus(1)
     }
+    fun incrementqueryVisitCount() {
+        // LiveDataの値を更新
+        queryButtonTouchCount.value = queryButtonTouchCount.value?.plus(1)
+    }
     fun incrementVisitCount2() {
         // LiveDataの値を更新
         visitCount2.value = visitCount2.value?.plus(1)

@@ -100,7 +100,7 @@ class ResultAllFragment2 : Fragment() {
         val adapter = ResultRecyclerViewAdapter2(resultList)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        numText?.setText("${mapsCountViewModel.visitCount.value}問")
+        numText?.setText("${mapsCountViewModel.visitCount2.value}問")
         //progressBar?.visibility = ProgressBar.GONE
     }
 }

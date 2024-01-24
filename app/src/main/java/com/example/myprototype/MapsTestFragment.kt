@@ -112,6 +112,11 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG,"onCreated queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}")
+        Log.d(TAG,"query List size: ${mapsCountViewModel.queryList.size}")
+        Log.d(TAG,"visit count: ${mapsCountViewModel.visitCount.value}")
+
+
+
 
 //        view.findViewById<ImageButton>(R.id.btn1).setOnClickListener {
 //            val btn = view.findViewById<ImageButton>(R.id.btn1)
@@ -273,7 +278,7 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                         "https://maps.googleapis.com/maps/api/directions/json?" +
                                 "origin=${currentLatLng?.latitude},${currentLatLng?.longitude}" +
                                 //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
-                                "&destination=34.98098,135.96139" +//near arrow
+                                "&destination=34.98085,135.96147" +//near arrow
                                 //                   crecore "34.97948,135.96404" +
                                 "&mode=walking" +
                                 //なくてよい？                                            Nitro                ８０前            アーク前
@@ -313,11 +318,12 @@ class MapsTestFragment : Fragment(),OnMapReadyCallback {
                         "https://maps.googleapis.com/maps/api/directions/json?" +
                                 "origin=34.97948,135.96404" +
                                 //                    "${currentLatLng?.latitude},${currentLatLng?.longitude}" +
-                                "&destination=34.98125,135.96258" +//near aed
+                                "&destination=34.98098,135.96288" +//near aed
                                 //                   crecore "34.97948,135.96404" +
                                 "&mode=walking" +
                                 //なくてよい？                                            Nitro                ８０前            アーク前
-                                "&waypoints=34.98040,135.96367|34.98046,135.96470|34.98089,135.96474" +
+                                "&waypoints=34.98180,135.96352|34.98111,135.96304" +
+//                                "34.98040,135.96367|34.98046,135.96470|34.98089,135.96474" +
 //
                                 //                    "34.97983,135.96478|34.97984,135.96502|34.98012,135.96488|34.98035,135.96494|34.98046,135.96381|34.98090,135.96371|34.98134,135.96472|34.98255,135.96457|34.98181,135.96349|" +
                                 //AED

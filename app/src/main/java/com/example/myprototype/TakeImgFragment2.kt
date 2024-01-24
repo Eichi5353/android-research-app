@@ -198,8 +198,7 @@ class TakeImgFragment2 : Fragment() {
                         if (query_file == "obj") {
                             mapsCountViewModel.isFirstPlaceComplete.value = true
                             Log.d(TAG, "isFirst True")
-                            mapsCountViewModel.queryButtonTouchCount.value =
-                                mapsCountViewModel.queryButtonTouchCount.value!! + 1
+                            mapsCountViewModel.incrementqueryVisitCount()
                             Log.d(
                                 TAG,
                                 "queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}"
@@ -207,8 +206,7 @@ class TakeImgFragment2 : Fragment() {
                         } else if (query_file == "aed") {
                             mapsCountViewModel.isFirstPlaceComplete.value = true
                             Log.d(TAG, "isSecond True")
-                            mapsCountViewModel.queryButtonTouchCount.value =
-                                mapsCountViewModel.queryButtonTouchCount.value!! + 1
+                            mapsCountViewModel.incrementqueryVisitCount()
                             Log.d(
                                 TAG,
                                 "queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}"
@@ -216,16 +214,16 @@ class TakeImgFragment2 : Fragment() {
 
                         } else if (query_file == "crecore") {
                             mapsCountViewModel.isThirdPlaceComplete.value = true
-                            mapsCountViewModel.queryButtonTouchCount.value =
-                                mapsCountViewModel.queryButtonTouchCount.value!! + 1
+                            mapsCountViewModel.incrementqueryVisitCount()
+
                             Log.d(
                                 TAG,
                                 "queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}"
                             )
                         } else if (query_file == "arrow") {
                             mapsCountViewModel.isSecondPlaceComplete.value = true
-                            mapsCountViewModel.queryButtonTouchCount.value =
-                                mapsCountViewModel.queryButtonTouchCount.value!! + 1
+                            mapsCountViewModel.incrementqueryVisitCount()
+
                             Log.d(
                                 TAG,
                                 "queryButtonCount: ${mapsCountViewModel.queryButtonTouchCount.value}"
